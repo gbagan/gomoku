@@ -1,0 +1,79 @@
+@tailwind base;
+@tailwind components;
+@tailwind utilities;
+
+:root {
+  font-size: 1vmax;
+}
+
+.boardtext {
+  font: bold 24px sans-serif;
+  fill: black;
+  dominant-baseline: middle;
+  text-anchor: middle;
+}
+
+.bg-black-peg {
+  background-image: radial-gradient(closest-corner at 30% 25%, rgb(119, 119, 119), rgb(34, 34, 34));
+}
+
+.bg-white-peg {
+  background-image: radial-gradient(closest-corner at 30% 25%, rgb(238, 238, 238), rgb(187, 187, 187));
+}
+
+.last-move {
+  box-shadow:
+    white 0px 0px 1rem 0.2rem;
+}
+
+@keyframes peg-anim {
+  0%, 100% {
+      transform: translateY(0);
+      box-shadow: none;
+  }
+  50% {
+      transform: translateY(-0.5rem);
+      box-shadow: 0 0.4rem 0.4rem rgba(0,0,0,0.7);
+  }
+}
+
+@layer components {
+  .btn {
+    @apply
+      rounded-lg w-full sm:w-auto px-5 py-2.5 text-center bg-blue-600
+      text-white font-medium text-base
+      focus:ring-4 focus:outline-none
+      hover:bg-blue-700 focus:ring-blue-800;
+  }
+
+  .dialog {
+    @apply rounded-lg bg-black text-white border-2 shadow backdrop:bg-gray-500 backdrop:bg-opacity-70;
+  }
+  
+  .dialog-title {
+    @apply p-4 min-h-8 border-b-2 text-4xl font-medium;
+  }
+
+  .dialog-body {
+    @apply p-6 border-b-2
+  }
+
+  .dialog-buttons {
+    @apply p-4 flex justify-end gap-4;
+  }
+
+  .largetext {
+    @apply text-4xl;
+  }
+
+  .inputnumber {
+    @apply
+      text-white inline-block border rounded-lg p-2.5 bg-gray-700 border-gray-600 placeholder-gray-400
+      text-lg w-32
+      focus:ring-blue-500 focus:border-blue-500;
+  }
+
+  .inputrange {
+    @apply w-full h-4 bg-gray-700 rounded-lg appearance-none cursor-pointer;
+  }
+}
