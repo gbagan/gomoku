@@ -8,7 +8,7 @@ module.exports = {
       },
       backgroundImage: {
         seamless: "url('./seamless.webp')",
-        main: "url('./background.jpg')",
+        main: "url('./background.webp')",
       }
     }
   },
