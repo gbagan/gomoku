@@ -18,13 +18,13 @@ const App: Component = () => {
     if (state.winner === 0 && state.board[i] === 0) {
       setState(produce(state => {
         state.board[i] = state.turn;
-        //state.turn = 3 - state.turn;
         state.played.push(i);
         if (hasWon(width, height, state.board, state.config.alignment, state.turn, i)) {
           state.winner = 1;
           return;
         }
         if (state.config.adversary !== 'human') {
+          state.isThinking = true;
           table = erdosTable(state.config.width, state.config.height, [...state.board], state.config.alignment, state.turn);
           state.scores = table;
         }
@@ -42,17 +42,22 @@ const App: Component = () => {
             return;
           }
           state.turn = 3 - state.turn;
+          state.isThinking = false;
         }));
       }
     };
   }
 
   const undo = () => {
+    if (state.isThinking)
+      return;
+
     setState(produce(state => {
       if(state.played.length) {
         const move = state.played.pop();
         state.board[move!] = 0;
         state.turn = 3 - state.turn;
+        state.winner = 0;
       }
       if(state.played.length && state.config.adversary !== 'human') {
         const move = state.played.pop();
@@ -74,6 +79,7 @@ const App: Component = () => {
       state.played = [];
       state.winner = 0;
       state.turn = 1;
+      state.isThinking = false;
     }))
     newGameDialog.close();
   }
@@ -88,7 +94,7 @@ const App: Component = () => {
           lastMove={last(state.played)}
           turn={state.turn}
           scores={state.scores}
-          canPlay={state.winner === 0}
+          canPlay={!state.isThinking && state.winner === 0}
           play={play}
         />
         <div class="flex flex-col bg-seamless">

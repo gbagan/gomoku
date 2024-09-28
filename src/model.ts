@@ -14,20 +14,29 @@ export type State = {
   scores: number[] | null,
   config: Config,
   winner: number,
+  isThinking: boolean,
 }
 
 export const newConfig: () => Config = () => ({
-    width: 15,
-    height: 15,
-    adversary: "level1",
-    alignment: 5,
+  width: 15,
+  height: 15,
+  adversary: "level1",
+  alignment: 5,
 });
 
 export const newState: () => State = () => {
   const config = newConfig();
   const board: number[] = new Array(config.width * config.height);
   board.fill(0);
-  return { board, turn: 1, played: [], scores: [], config: newConfig(), winner: 0 };
+  return {
+    board,
+    turn: 1,
+    played: [],
+    scores: [],
+    config: newConfig(),
+    winner: 0,
+    isThinking: false,
+};
 }
 
 export function hasWon(width: number, height: number, board: number[], alignment: number, color: number, move: number) {
