@@ -1,5 +1,6 @@
 import range from "lodash.range";
-import { Component, createSignal, For, Index, Match, Switch } from "solid-js";
+import { Component, createMemo, createSignal, For, Index, Match, Show, Switch } from "solid-js";
+import { Transition } from "solid-transition-group";
 
 const alphabet = "ABCDEFGHIJKLMNOPQRSTUVWXYZ";
 
@@ -8,128 +9,162 @@ type BoardComponent = Component<{
   width: number,
   height: number,
   lastMove: number | null,
+  scores: number[] | null,
   turn: number,
+  canPlay: boolean,
   play: (i: number) => void,
 }>
 
 const Board: BoardComponent = props => {
   const [hover, setHover] = createSignal<number | null>(null);
 
-  const points = [[7, 7], [3, 3], [11, 3], [3, 11], [11, 11]];
+  const dimensions = createMemo(() => {
+    const x = 0.05 * (140 + 50 * (props.width - 1));
+    const y = 0.05 * (140 + 50 * (props.height - 1));
+    const m = Math.max(x, y);
+    return m > 42 ? [x * 42 / m, y * 42 / m] : [x, y];
+  });
+
+  const points = () => {
+    const mx = props.width / 2 | 0;
+    const my = props.height / 2 | 0;
+    const qx = mx / 2 | 0;
+    const qy = my / 2 | 0;
+    return [[mx, my], [mx - qx, my - qy], [mx + qx, my - qy], [mx - qx, my + qy], [mx + qx, my + qy]];
+  }
 
   return (
-    <div class="bg-seamless h-[45rem] w-[45rem] border-4 border-black rounded-3xl relative">
-      <div class="absolute w-full h-full">
-        <svg viewBox="-70 -70 1140 1140" class="select-none">
-          <For each={range(0, props.width)}>
-            {i =>
-              <>
-                <line
-                  x1="0"
-                  x2="1000"
-                  y1={1000 * i / (props.height - 1)}
-                  y2={1000 * i / (props.height - 1)}
-                  stroke="black"
-                  stroke-width="1"
-                />
-                <text
-                  x="-50"
-                  y={1000 * i / (props.height - 1)}
-                  class="boardtext"
-                >
-                  {props.width - i}
-                </text>
-                <text
-                  x="1050"
-                  y={1000 * i / (props.height - 1)}
-                  class="boardtext"
-                >
-                  {props.width - i}
-                </text>
-              </>
-            }
-          </For>
-          <For each={range(0, props.height)}>
-            {i =>
-              <>
-                <line
-                  y1="0"
-                  y2="1000"
-                  x1={1000 * i / (props.height - 1)}
-                  x2={1000 * i / (props.height - 1)}
-                  stroke="black"
-                  stroke-width="1"
-                />
-                <text
-                  y="-50"
-                  x={1000 * i / (props.height - 1)}
-                  class="boardtext"
-                >
-                  {alphabet[i]}
-                </text>
-                <text
-                  y="1050"
-                  x={1000 * i / (props.height - 1)}
-                  class="boardtext"
-                >
-                  {alphabet[i]}
-                </text>
-              </>
-            }
-          </For>
-          <For each={points}>
-            {([x, y]) => (
-              <circle
-                cx={1000 * x / (props.width - 1)}
-                cy={1000 * y / (props.height - 1)}
-                r="5"
-                fill="black"
+    <div
+      class="bg-seamless border-4 border-black rounded-3xl relative"
+      style={{
+        width: `${dimensions()[0]}rem`,
+        height: `${dimensions()[1]}rem`,
+      }}
+    >
+      <svg viewBox={`-70 -70 ${140 + 50 * (props.width - 1)} ${140 + 50 * (props.height - 1)}`} class="select-none">
+        <For each={range(0, props.height)}>
+          {i =>
+            <>
+              <line
+                x1="0"
+                x2={50 * (props.width - 1)}
+                y1={50 * i}
+                y2={50 * i}
+                stroke="black"
+                stroke-width="1"
               />
-            )}
-          </For>
-        </svg>
-        <Index each={props.board}>
-          {(c, i) => (
-            <div
-              class="absolute flex"
-              style={{
-                left: `${40 * 100 / 1140 + (i % props.width) / (props.width - 1) * 10000 / 114}%`,
-                top: `${40 * 100 / 1140 + (i / props.width | 0) / (props.height - 1) * 10000 / 114}%`,
-                width: `${60 * 100 / 1140}%`,
-                height: `${60 * 100 / 1140}%`,
-              }}
-              onClick={[props.play, i]}
-              onPointerEnter={[setHover, i]}
-              onPointerLeave={[setHover, null]}
-            >
-              <Switch>
-                <Match when={c() !== 0}>
-                  <div
-                    class="rounded-full w-full h-full"
-                    classList={{
-                      "bg-black-peg": c() === 1,
-                      "bg-white-peg": c() === 2,
-                      "shadow-lg shadow-white": i === props.lastMove,
-                    }}
-                  />
-                </Match>
-                <Match when={hover() === i}>
-                  <div
-                    class="rounded-full w-full h-full opacity-50"
-                    classList={{
-                      "bg-black-peg": props.turn === 1,
-                      "bg-white-peg": props.turn === 2,
-                    }}
-                    style={{
-                      animation: "peg-anim 1s ease-in-out infinite",
-                    }}
-                  />
-                </Match>
-              </Switch>
-            </div>
+              <text
+                x="-50"
+                y={50 * i}
+                class="boardtext"
+              >
+                {props.height - i}
+              </text>
+              <text
+                x={50 * (props.width - 1) + 50}
+                y={50 * i}
+                class="boardtext"
+              >
+                {props.height - i}
+              </text>
+            </>
+          }
+        </For>
+        <For each={range(0, props.width)}>
+          {i =>
+            <>
+              <line
+                y1="0"
+                y2={50 * (props.height - 1)}
+                x1={50 * i}
+                x2={50 * i}
+                stroke="black"
+                stroke-width="1"
+              />
+              <text
+                y="-50"
+                x={50 * i}
+                class="boardtext"
+              >
+                {alphabet[i]}
+              </text>
+              <text
+                y={50 * (props.height - 1) + 50}
+                x={50 * i}
+                class="boardtext"
+              >
+                {alphabet[i]}
+              </text>
+            </>
+          }
+        </For>
+        <For each={points()}>
+          {([x, y]) => (
+            <circle cx={50 * x} cy={50 * y} r="5" fill="black" />
           )}
-        </Index>
-      </div>
+        </For>
+        <foreignObject x="-25" y="-25" width={props.width * 50} height={props.height * 50}>
+          <div class="relative w-full h-hull">
+            <Index each={props.board}>
+              {(c, i) => (
+                <div
+                  class="absolute flex justify-center items-center"
+                  style={{
+                    left: `${50 * (i % props.width)}px`,
+                    top: `${50 * (i / props.width | 0)}px`,
+                    width: "50px",
+                    height: "50px",
+                  }}
+                  onClick={[props.play, i]}
+                  onPointerEnter={[setHover, i]}
+                  onPointerLeave={[setHover, null]}
+                >
+                  <div
+                    class="absolute w-full h-full transition-opacity duration-1000"
+                    style={{
+                      opacity: c() > 0 || !props.scores ? 0 : 0.5,
+                      "background-color": !props.scores ? "transparent" : `rgb(255,${256 * props.scores[i]},0)`,
+                    }}
+                  />
+                  <Transition
+                    onExit={(el, done) => {
+                      const a = el.animate([
+                        { opacity: 1, transform: "translateY(0)" },
+                        { opacity: 0, transform: "translateY(-4rem)" }], {
+                        duration: 600
+                      });
+                      a.finished.then(done);
+                    }}
+                  >
+                    <Show when={c() !== 0}>
+                      <div
+                        class="rounded-full w-4/5 h-4/5"
+                        classList={{
+                          "bg-black-peg": c() === 1,
+                          "bg-white-peg": c() === 2,
+                          "shadow-lg shadow-white": i === props.lastMove,
+                        }}
+                      />
+                    </Show>
+                  </Transition>
+                  <Show when={props.canPlay && c() === 0 && hover() === i}>
+                    <div
+                      class="rounded-full w-4/5 h-4/5 opacity-50"
+                      classList={{
+                        "bg-black-peg": props.turn === 1,
+                        "bg-white-peg": props.turn === 2,
+                      }}
+                      style={{
+                        animation: "peg-anim 1s ease-in-out infinite",
+                      }}
+                    />
+                  </Show>
+                </div>
+              )}
+            </Index>
+          </div>
+        </foreignObject>
+      </svg>
     </div>
   )
 }

@@ -13,19 +13,6 @@
   text-anchor: middle;
 }
 
-.bg-black-peg {
-  background-image: radial-gradient(closest-corner at 30% 25%, rgb(119, 119, 119), rgb(34, 34, 34));
-}
-
-.bg-white-peg {
-  background-image: radial-gradient(closest-corner at 30% 25%, rgb(238, 238, 238), rgb(187, 187, 187));
-}
-
-.last-move {
-  box-shadow:
-    white 0px 0px 1rem 0.2rem;
-}
-
 @keyframes peg-anim {
   0%, 100% {
       transform: translateY(0);
@@ -37,12 +24,76 @@
   }
 }
 
+@keyframes flip-anim {
+  0% {
+    opacity: 0;
+    transform: rotateY(180deg);
+  }
+  100% {
+    opacity: 100;
+    transform: rotateY(0);
+  }
+}
+
+@keyframes dialog-close-anim {
+  0% {
+    transform: scale(1);
+  }
+  100% {
+    transform: scale(0.1);
+  }
+}
+
 @layer components {
   .btn {
     @apply
-      rounded-lg w-full sm:w-auto px-5 py-2.5 text-center bg-blue-600
-      text-white font-medium text-base
-      focus:ring-4 focus:outline-none
-      hover:bg-blue-700 focus:ring-blue-800;
+      px-4 py-2 text-sm font-medium text-gray-700 bg-transparent border border-gray-800
+      hover:bg-yellow-300 hover:bg-opacity-50 hover:text-blue-700
+      focus:z-10 focus:ring-2 focus:ring-blue-700 focus:text-blue-700
+      disabled:opacity-50 disabled:cursor-not-allowed;
+  }
+
+  .btngroup {
+    @apply inline-flex rounded-md shadow-sm;
+  }
+
+  .togglebtn {
+    @apply px-4 py-2 text-sm font-medium text-gray-700 border border-gray-800;
+  }
+
+  .toggledbtn {
+    @apply bg-yellow-300 bg-opacity-50;
+  }
+
+  .dialog {
+    @apply
+      block bg-seamless rounded-lg shadow backdrop:bg-gray-500 backdrop:bg-opacity-70
+      transition-opacity duration-1000;
+      animation: dialog-close-anim 500ms ease-in-out forwards;
+  }
+
+  .dialog:not([open]) {
+    @apply pointer-events-none opacity-0;
+    
+  }
+  
+  .dialog[open] {
+    animation: flip-anim 500ms ease-in-out forwards;
+  }
+
+  .dialog-title {
+    @apply p-4 min-h-8 border-b-2 border-black text-4xl font-medium;
+  }
+
+  .dialog-body {
+    @apply p-10 border-black border-b-2;
+  }
+
+  .dialog-buttons {
+    @apply p-4 flex justify-end gap-4;
+  }
+
+  .deletemode {
+    @apply [&>.edge:hover]:stroke-gray-500 [&>.edge:hover]:stroke-2 [&>.vertex:hover]:fill-gray-500;
   }
 }

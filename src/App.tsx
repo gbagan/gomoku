@@ -1,25 +1,50 @@
 import { Component } from 'solid-js';
 import { createStore, produce } from "solid-js/store";
 import Board from './components/Board';
-import { last } from './util';
+import { delay, last } from './util';
+import { computerMove, erdosTable } from './erdos';
+import { Config, hasWon, newState } from './model';
+import NewGame from './components/NewGame';
 
 const App: Component = () => {
-  const width = 15;
-  const height = 15;
+  let newGameDialog!: HTMLDialogElement;
 
-  const board: number[] = new Array(15 * 15);
-  board.fill(0);
+  const [state, setState] = createStore(newState());
 
-  const [state, setState] = createStore({ board, turn: 1, played: [] as number[] });
-
-  const play = (i: number) => {
-    setState(produce(state => {
-      if (state.board[i] === 0) {
+  const play = async (i: number) => {
+    const width = state.config.width;
+    const height = state.config.height;
+    let table: number[];
+    if (state.winner === 0 && state.board[i] === 0) {
+      setState(produce(state => {
         state.board[i] = state.turn;
-        state.turn = 3 - state.turn;
+        //state.turn = 3 - state.turn;
         state.played.push(i);
+        if (hasWon(width, height, state.board, state.config.alignment, state.turn, i)) {
+          state.winner = 1;
+          return;
+        }
+        if (state.config.adversary !== 'human') {
+          table = erdosTable(state.config.width, state.config.height, [...state.board], state.config.alignment, state.turn);
+          state.scores = table;
+        }
+        state.turn = 3 - state.turn;
+      }));
+      if (state.winner === 0 && state.config.adversary !== 'human') {
+        await delay(1500);
+        setState(produce(state => {
+          let j = computerMove(table);
+          state.board[j] = state.turn;
+          state.played.push(j);
+          state.scores = null;
+          if (hasWon(width, height, state.board, state.config.alignment, state.turn, j)) {
+            state.winner = 2;
+            return;
+          }
+          state.turn = 3 - state.turn;
+        }));
       }
-    }));
+    };
   }
 
   const undo = () => {
@@ -29,7 +54,28 @@ const App: Component = () => {
         state.board[move!] = 0;
         state.turn = 3 - state.turn;
       }
+      if(state.played.length && state.config.adversary !== 'human') {
+        const move = state.played.pop();
+        state.board[move!] = 0;
+        state.turn = 3 - state.turn;
+      }
     }));
+  }
+
+  const openNewGameDialog = () => {
+    newGameDialog.showModal();
+  }
+
+  const newGame = (config: Config) => {
+    setState(produce(state => {
+      state.config = {...config};
+      state.board = new Array(config.width * config.height);
+      state.board.fill(0);
+      state.played = [];
+      state.winner = 0;
+      state.turn = 1;
+    }))
+    newGameDialog.close();
   }
 
   return (
@@ -37,14 +83,26 @@ const App: Component = () => {
       <div class="w-full min-h-screen bg-main bg-cover flex flew-row items-center justify-around portrait:flex-col">
         <Board
           board={state.board}
-          width={width}
-          height={height}
+          width={state.config.width}
+          height={state.config.height}
           lastMove={last(state.played)}
           turn={state.turn}
+          scores={state.scores}
+          canPlay={state.winner === 0}
           play={play}
         />
-        <button class="btn" onClick={undo}>Annuler</button>
+        <div class="flex flex-col bg-seamless">
+          <button class="btn" onClick={openNewGameDialog}>Nouvelle partie</button>
+          <button class="btn" onClick={undo}>Annuler</button>
+        </div>
       </div>
+      <dialog class="dialog" ref={newGameDialog}>
+       <NewGame
+        config={state.config}
+        closeDialog={() => newGameDialog.close()}
+        newGame={newGame}
+       />
+      </dialog>
     </>
   )
 }
