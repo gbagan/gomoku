@@ -1,6 +1,7 @@
 import range from "lodash.range";
-import { Component, createMemo, createSignal, For, Index, Match, Show, Switch } from "solid-js";
+import { Component, createMemo, createSignal, For, Index, Show } from "solid-js";
 import { Transition } from "solid-transition-group";
+import { Winner } from "../model";
 
 const alphabet = "ABCDEFGHIJKLMNOPQRSTUVWXYZ";
 
@@ -12,6 +13,7 @@ type BoardComponent = Component<{
   scores: number[] | null,
   turn: number,
   canPlay: boolean,
+  winner: Winner,
   play: (i: number) => void,
 }>
 
@@ -104,7 +106,7 @@ const Board: BoardComponent = props => {
           )}
         </For>
         <foreignObject x="-25" y="-25" width={props.width * 50} height={props.height * 50}>
-          <div class="relative w-full h-hull">
+          <div class="relative w-full h-full">
             <Index each={props.board}>
               {(c, i) => (
                 <div
@@ -136,7 +138,7 @@ const Board: BoardComponent = props => {
                       a.finished.then(done);
                     }}
                   >
-                    <Show when={c() !== 0}>
+                    {c() !== 0 &&
                       <div
                         class="rounded-full w-4/5 h-4/5"
                         classList={{
@@ -145,7 +147,7 @@ const Board: BoardComponent = props => {
                           "shadow-lg shadow-white": i === props.lastMove,
                         }}
                       />
-                    </Show>
+                    }
                   </Transition>
                   <Show when={props.canPlay && c() === 0 && hover() === i}>
                     <div
@@ -164,6 +166,17 @@ const Board: BoardComponent = props => {
             </Index>
           </div>
         </foreignObject>
+        {props.winner &&
+          <line
+            x1={50 * (props.winner.alignment[0] % props.width)}
+            x2={50 * (props.winner.alignment[1] % props.width)}
+            y1={50 * (props.winner.alignment[0] / props.width | 0)}
+            y2={50 * (props.winner.alignment[1] / props.width | 0)}
+            stroke="red"
+            stroke-width="8"
+            stroke-linecap="round"
+          />
+        }
       </svg>
     </div>
   )

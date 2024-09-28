@@ -15,12 +15,13 @@ const App: Component = () => {
     const width = state.config.width;
     const height = state.config.height;
     let table: number[];
-    if (state.winner === 0 && state.board[i] === 0) {
+    if (!state.winner && state.board[i] === 0) {
       setState(produce(state => {
         state.board[i] = state.turn;
         state.played.push(i);
-        if (hasWon(width, height, state.board, state.config.alignment, state.turn, i)) {
-          state.winner = 1;
+        let won = hasWon(width, height, state.board, state.config.alignment, state.turn, i);
+        if(won) {
+          state.winner = won;
           return;
         }
         if (state.config.adversary !== 'human') {
@@ -30,15 +31,16 @@ const App: Component = () => {
         }
         state.turn = 3 - state.turn;
       }));
-      if (state.winner === 0 && state.config.adversary !== 'human') {
+      if (!state.winner && state.config.adversary !== 'human') {
         await delay(1500);
         setState(produce(state => {
           let j = computerMove(table);
           state.board[j] = state.turn;
           state.played.push(j);
           state.scores = null;
-          if (hasWon(width, height, state.board, state.config.alignment, state.turn, j)) {
-            state.winner = 2;
+          let won = hasWon(width, height, state.board, state.config.alignment, state.turn, i);
+          if(won) {
+            state.winner = won;
             return;
           }
           state.turn = 3 - state.turn;
@@ -57,7 +59,7 @@ const App: Component = () => {
         const move = state.played.pop();
         state.board[move!] = 0;
         state.turn = 3 - state.turn;
-        state.winner = 0;
+        state.winner = null;
       }
       if(state.played.length && state.config.adversary !== 'human') {
         const move = state.played.pop();
@@ -77,7 +79,7 @@ const App: Component = () => {
       state.board = new Array(config.width * config.height);
       state.board.fill(0);
       state.played = [];
-      state.winner = 0;
+      state.winner = null;
       state.turn = 1;
       state.isThinking = false;
     }))
@@ -94,7 +96,8 @@ const App: Component = () => {
           lastMove={last(state.played)}
           turn={state.turn}
           scores={state.scores}
-          canPlay={!state.isThinking && state.winner === 0}
+          winner={state.winner}
+          canPlay={!state.isThinking && !state.winner}
           play={play}
         />
         <div class="flex flex-col bg-seamless">

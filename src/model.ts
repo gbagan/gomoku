@@ -7,13 +7,15 @@ export type Config = {
   alignment: number,
 }
 
+export type Winner = {color: number, alignment: [number, number]} | null;
+
 export type State = {
   board: number[],
   turn: number,
   played: number[],
   scores: number[] | null,
   config: Config,
-  winner: number,
+  winner: Winner,
   isThinking: boolean,
 }
 
@@ -34,26 +36,33 @@ export const newState: () => State = () => {
     played: [],
     scores: [],
     config: newConfig(),
-    winner: 0,
+    winner: null,
     isThinking: false,
 };
 }
 
-export function hasWon(width: number, height: number, board: number[], alignment: number, color: number, move: number) {
-  function count(x: number, y: number, dx: number, dy: number) {
+export function hasWon(width: number, height: number, board: number[], alignment: number, color: number, move: number):
+    { color: number, alignment: [number, number]} | null
+{
+  function count(x: number, y: number, dx: number, dy: number): [number, number] {
     let n = 0;
     while(x >= 0 && x < width && y >= 0 && y < height && board[y * width + x] === color) {
       n++;
       x += dx;
       y += dy;
     }
-    return n;
+    return [n, x - dx + width * (y - dy)];
   }
 
   let ix = move % width;
   let iy = move / width | 0;
   
-  return [[0, 1], [1, 0], [1, 1], [1, -1]].some(([dx, dy]) =>
-    count(ix+dx, iy+dy, dx, dy) + count(ix-dx, iy-dy, -dx, -dy) >= alignment - 1
-  )
+  for (const [dx, dy] of [[0, 1], [1, 0], [1, 1], [1, -1]]) {
+    const [a, ext1] = count(ix+dx, iy+dy, dx, dy);
+    const [b, ext2] = count(ix-dx, iy-dy, -dx, -dy);
+    if (a + b >= alignment - 1) {
+        return { color, alignment: [ext1, ext2] };
+    }
+  }
+  return null;
 }
