@@ -74,7 +74,6 @@
 
   .dialog:not([open]) {
     @apply pointer-events-none opacity-0;
-    
   }
   
   .dialog[open] {
@@ -93,7 +92,19 @@
     @apply p-4 flex justify-end gap-4;
   }
 
-  .deletemode {
-    @apply [&>.edge:hover]:stroke-gray-500 [&>.edge:hover]:stroke-2 [&>.vertex:hover]:fill-gray-500;
+  .tooltip {
+    @apply bg-white absolute text-center rounded-xl px-2 py-1 mb-4 w-96 transition-opacity duration-500;
+    left: -6rem;
+    top: -6rem;
+  }
+
+  .tooltip::after {
+    @apply absolute border-8;
+    content: "";
+    position: absolute;
+    top: 100%;
+    left: 50%;
+    margin-left: -0.7rem;
+    border-color: white transparent transparent transparent;
   }
 }
