@@ -95,7 +95,7 @@ const App: Component = () => {
 
   return (
     <>
-      <div class="w-full min-h-screen h-full bg-main bg-cover flex flew-row items-center justify-around portrait:flex-col">
+      <div class="w-screen min-h-screen bg-main bg-cover flex flew-row items-center justify-around portrait:flex-col">
         <div class="flex flex-col bg-wood">
           <button class="btn" onClick={openNewGameDialog}>Nouvelle partie</button>
           <button class="btn" onClick={undo}>Annuler</button>

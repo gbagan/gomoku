@@ -22,10 +22,10 @@ const Board: BoardComponent = props => {
   const [hover, setHover] = createSignal<number | null>(null);
 
   const dimensions = createMemo(() => {
-    const x = 0.05 * (140 + 50 * (props.width - 1));
-    const y = 0.05 * (140 + 50 * (props.height - 1));
+    const x = 0.06 * (140 + 50 * (props.width - 1));
+    const y = 0.06 * (140 + 50 * (props.height - 1));
     const m = Math.max(x, y);
-    return m > 42 ? [x * 42 / m, y * 42 / m] : [x, y];
+    return m > 50 ? [x * 42 / m, y * 42 / m] : [x, y];
   });
 
   const points = () => {
@@ -181,6 +181,7 @@ const Board: BoardComponent = props => {
             stroke={props.turn === 1 ? "black" : "white"}
             stroke-width="3"
             fill="transparent"
+            class="pointer-events-none"
           />
         }
         {props.winner &&
