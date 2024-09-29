@@ -77,7 +77,13 @@ const App: Component = () => {
   }
 
   const openNewGameDialog = () => {
+    setState("dialogOpened", true);
     newGameDialog.showModal();
+  }
+
+  const closeNewGameDialog = () => {
+    newGameDialog.close();
+    setState("dialogOpened", false);
   }
 
   const newGame = (config: Config) => {
@@ -89,6 +95,7 @@ const App: Component = () => {
       state.winner = null;
       state.turn = 1;
       state.isThinking = false;
+      state.dialogOpened = false;
     }))
     newGameDialog.close();
   }
@@ -120,12 +127,19 @@ const App: Component = () => {
           adversary={state.config.adversary}
         />
       </div>
-      <dialog class="dialog" ref={newGameDialog}>
-        <NewGame
-          config={state.config}
-          closeDialog={() => newGameDialog.close()}
-          newGame={newGame}
-        />
+      <dialog
+        class="dialog"
+        ref={newGameDialog}
+        onCancel={closeNewGameDialog}
+        onClose={closeNewGameDialog}
+      >
+        {state.dialogOpened && 
+          <NewGame
+            config={state.config}
+            closeDialog={closeNewGameDialog}
+            newGame={newGame}
+          />
+        }
       </dialog>
     </>
   )
