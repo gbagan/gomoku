@@ -71,10 +71,9 @@ const App: Component = () => {
         state.board[j] = state.turn;
         state.played.push(j);
         state.scores = null;
-        let won = hasWon(width, height, state.board, state.config.alignment, state.turn, i);
+        let won = hasWon(width, height, state.board, state.config.alignment, state.turn, j);
         if (won) {
           state.winner = won;
-          return;
         }
         state.turn = 3 - state.turn;
         state.isThinking = false;
