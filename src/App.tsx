@@ -5,13 +5,7 @@ import { delay, last } from './util';
 import { computerMove, erdosTable } from './erdos';
 import { Config, getThreats, hasWon, newState } from './model';
 import NewGame from './components/NewGame';
-import { Transition } from 'solid-transition-group';
-
-const messages: [string, number][] = [
-  ["Bienvenue sur l'appli Gomoku", 4000],
-  ["Gomoku connu aussi sous le nom de Darpion est un jeu positionnel.", 5000],
-  ["Il existe de nombreuses variantes: Libre, Renju, Caro, Omok, Ninuki-renju", 5000]
-]
+import Info from './components/Info';
 
 const App: Component = () => {
   let newGameDialog!: HTMLDialogElement;
@@ -20,26 +14,6 @@ const App: Component = () => {
 
   const threats = createMemo(() => 
     getThreats(state.config.width, state.config.height, state.board, state.config.alignment, 3 - state.turn)
-  )
-
-  const message = createMemo(() =>
-    state.winner !== null
-      ? `Le joueur ${state.winner.color === 1 ? "noir" : "blanc"} a gagné la partie. Tu peux changer le niveau de difficulté en clickant sur "Nouvelle partie".`
-      : threats().length > 1
-      ? `Le joueur ${state.turn === 1 ? "blanc" : "noir"} a réussi une menace multiple. Il peut gagner la partie quoique réponde l'adversaire.`
-      : state.message
-  )
-
-  const girlExpression = createMemo(() =>
-    state.isThinking 
-    ? "bg-thinking"
-    : state.winner !== null && state.winner.color === 1 && state.config.adversary !== 'human'
-    ? "bg-crying"
-    : state.winner !== null && (state.winner.color === 2 || state.config.adversary === 'human')
-    ? "bg-happy"
-    : threats().length > 1
-    ? "bg-surprised"
-    : "bg-speaking"
   )
 
   const play = async (i: number) => {
@@ -64,6 +38,7 @@ const App: Component = () => {
       }
       state.turn = 3 - state.turn;
     }));
+
     if (!state.winner && state.config.adversary !== 'human') {
       await delay(1500);
       setState(produce(state => {
@@ -117,18 +92,6 @@ const App: Component = () => {
     newGameDialog.close();
   }
 
-  onMount(async () => {
-    let i = 0;
-    while (true) {
-      const d = messages[i][1];
-      setState("message", messages[i][0]);
-      await delay(d);
-      setState("message", null);
-      i = (i + 1) % messages.length;
-      await delay(2000);
-    }
-  })
-
   return (
     <>
       <div class="w-full min-h-screen h-full bg-main bg-cover flex flew-row items-center justify-around portrait:flex-col">
@@ -148,30 +111,13 @@ const App: Component = () => {
           canPlay={!state.isThinking && !state.winner}
           play={play}
         />
-        <div class={`relative w-[15rem] h-[25rem] bg-contain bg-no-repeat ${girlExpression()}`}>
-          <Transition
-            onEnter={(el, done) => {
-              const a = el.animate([
-                { opacity: 0 },
-                { opacity: 1 }], {
-                duration: 500
-              }
-              );
-              a.finished.then(done);
-            }}
-            onExit={(el, done) => {
-              const a = el.animate([
-                { opacity: 1 },
-                { opacity: 0 }], {
-                duration: 500
-              }
-              );
-              a.finished.then(done);
-            }}
-          >
-            {message() && <div class="tooltip">{message()}</div>}
-          </Transition>
-        </div>
+        <Info
+          multipleThreats={threats().length >= 2}
+          winner={state.winner}
+          turn={state.turn}
+          isThinking={state.isThinking}
+          adversary={state.config.adversary}
+        />
       </div>
       <dialog class="dialog" ref={newGameDialog}>
         <NewGame

@@ -17,7 +17,6 @@ export type State = {
   config: Config,
   winner: Winner,
   isThinking: boolean,
-  message: string | null,
 }
 
 export const newConfig: () => Config = () => ({
@@ -39,7 +38,6 @@ export const newState: () => State = () => {
     config: newConfig(),
     winner: null,
     isThinking: false,
-    message: null,
   };
 }
 
