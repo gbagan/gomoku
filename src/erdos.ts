@@ -86,14 +86,15 @@ export function erdosTable(width: number, height: number, board: number[], len: 
   let min = Math.min(...table);
   let max = Math.max(...table.filter(n => n !== Infinity));
 
-  return table.map(i => i == Infinity ? Infinity : min === max ? 0 : (i - min) / (max - min));
+  return table.map(i => i == Infinity ? Infinity : min === max ? 1 : (i - min) / (max - min));
 }
 
 export function computerMove(table: number[]): number {
   const n = table.length;
+  const min = Math.min(...table);
   const moves = [];
   for (let i = 0; i < n; i++) {
-    if (table[i] === 0) {
+    if (table[i] === min) {
       moves.push(i);
     }
   }

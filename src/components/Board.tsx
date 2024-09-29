@@ -167,7 +167,7 @@ const Board: BoardComponent = props => {
                   r="20"
                   fill="red"
                   filter="drop-shadow(0px 0px 5px red)"
-                  class="animate-threat"
+                  class="pointer-events-none animate-threat"
                 />
               </Show>
             </g>
