@@ -8,7 +8,7 @@ export default {
         '30': '7.5rem',
       },
       backgroundImage: {
-        seamless: "url('../seamless.webp')",
+        wood: "url('../wood.webp')",
         main: "url('../background.webp')",
         thinking: "url('../girl_thinking.webp')",
         happy: "url('../girl_happy.webp')",
