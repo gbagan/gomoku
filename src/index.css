@@ -13,46 +13,6 @@
   text-anchor: middle;
 }
 
-@keyframes peg-anim {
-  0%, 100% {
-      transform: translateY(0);
-      box-shadow: none;
-  }
-  50% {
-      transform: translateY(-0.5rem);
-      box-shadow: 0 0.4rem 0.4rem rgba(0,0,0,0.7);
-  }
-}
-
-@keyframes flip-anim {
-  0% {
-    opacity: 0;
-    transform: rotateY(180deg);
-  }
-  100% {
-    opacity: 100;
-    transform: rotateY(0);
-  }
-}
-
-@keyframes dialog-close-anim {
-  0% {
-    transform: scale(1);
-  }
-  100% {
-    transform: scale(0.1);
-  }
-}
-
-@keyframes blink-anim {
-  from {
-    opacity: 0.05;
-  }
-  to {
-    opacity: 0.95;
-  }
-}
-
 @layer components {
   .btn {
     @apply
@@ -76,9 +36,7 @@
 
   .dialog {
     @apply
-      block bg-seamless rounded-lg shadow backdrop:bg-gray-500 backdrop:bg-opacity-70
-      transition-opacity duration-1000;
-      animation: dialog-close-anim 500ms ease-in-out forwards;
+      block bg-seamless rounded-lg shadow backdrop:bg-gray-500 backdrop:bg-opacity-70;
   }
 
   .dialog:not([open]) {
@@ -86,7 +44,7 @@
   }
   
   .dialog[open] {
-    animation: flip-anim 500ms ease-in-out forwards;
+    @apply animate-flip-anim;
   }
 
   .dialog-title {
@@ -102,18 +60,12 @@
   }
 
   .tooltip {
-    @apply bg-white absolute text-center rounded-xl px-2 py-1 mb-4 w-96 transition-opacity duration-500;
-    left: -6rem;
-    top: -6rem;
+    @apply bg-white absolute text-center rounded-xl
+      px-2 py-1 mb-4 w-96
+      right-0 bottom-full transition-opacity duration-500;
   }
 
   .tooltip::after {
-    @apply absolute border-8;
-    content: "";
-    position: absolute;
-    top: 100%;
-    left: 50%;
-    margin-left: -0.7rem;
-    border-color: white transparent transparent transparent;
+    @apply absolute border-8 top-full left-1/2 ml-3 content-[""] border-transparent border-t-white;
   }
 }

@@ -23,6 +23,20 @@ export default {
       },
       boxShadow: {
         'threat': '0 0 20px red',
+      },
+      animation: {
+        'flip-anim': 'flip 500ms linear forwards',
+        'peg': 'peg 1s ease-in-out infinite',
+      },
+      keyframes: {
+        flip: {
+          '0%': { opacity: '0', transform: 'rotateY(180deg)' },
+          '100%': { opacity: '1', transform: 'rotateY(0)' },
+        },
+        peg: {
+          '0%, 100%': { transform: 'translateY(0)', 'box-shadow': 'none'},
+          '50%': { transform: 'translateY(-0.5rem)', 'box-shadow': '0 0.4rem 0.4rem rgba(0,0,0,0.7)' },
+        }
       }
     }
   },
