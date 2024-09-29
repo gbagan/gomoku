@@ -14,6 +14,7 @@ type BoardComponent = Component<{
   turn: number,
   canPlay: boolean,
   winner: Winner,
+  threats: number[],
   play: (i: number) => void,
 }>
 
@@ -149,6 +150,12 @@ const Board: BoardComponent = props => {
                       />
                     }
                   </Transition>
+                  <Show when={props.threats.includes(i)}>
+                    <div
+                      class="absolute rounded-full w-4/5 h-4/5 bg-red-500 bg-opacity-70 shadow-threat"
+                      //style={{ animation: "blink-anim 1s ease-in-out infinite" }}
+                    />
+                  </Show>
                   <Show when={props.canPlay && c() === 0 && hover() === i}>
                     <div
                       class="rounded-full w-4/5 h-4/5 opacity-50"
@@ -156,9 +163,7 @@ const Board: BoardComponent = props => {
                         "bg-black-peg": props.turn === 1,
                         "bg-white-peg": props.turn === 2,
                       }}
-                      style={{
-                        animation: "peg-anim 1s ease-in-out infinite",
-                      }}
+                      style={{ animation: "peg-anim 1s ease-in-out infinite" }}
                     />
                   </Show>
                 </div>

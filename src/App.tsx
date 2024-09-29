@@ -1,22 +1,46 @@
-import { Component, onMount } from 'solid-js';
+import { Component, createMemo, onMount } from 'solid-js';
 import { createStore, produce } from "solid-js/store";
 import Board from './components/Board';
 import { delay, last } from './util';
 import { computerMove, erdosTable } from './erdos';
-import { Config, hasWon, newState } from './model';
+import { Config, getThreats, hasWon, newState } from './model';
 import NewGame from './components/NewGame';
 import { Transition } from 'solid-transition-group';
 
 const messages: [string, number][] = [
-  ["Bienvenue sur l'appli Gomoku", 5000],
+  ["Bienvenue sur l'appli Gomoku", 4000],
   ["Gomoku connu aussi sous le nom de Darpion est un jeu positionnel.", 5000],
+  ["Il existe de nombreuses variantes: Libre, Renju, Caro, Omok, Ninuki-renju", 5000]
 ]
-
 
 const App: Component = () => {
   let newGameDialog!: HTMLDialogElement;
 
   const [state, setState] = createStore(newState());
+
+  const threats = createMemo(() => 
+    getThreats(state.config.width, state.config.height, state.board, state.config.alignment, 3 - state.turn)
+  )
+
+  const message = createMemo(() =>
+    state.winner !== null
+      ? `Le joueur ${state.winner.color === 1 ? "noir" : "blanc"} a gagné la partie. Tu peux changer le niveau de difficulté en clickant sur "Nouvelle partie".`
+      : threats().length > 1
+      ? `Le joueur ${state.turn === 1 ? "blanc" : "noir"} a réussi une menace multiple. Il peut gagner la partie quoique réponde l'adversaire.`
+      : state.message
+  )
+
+  const girlExpression = createMemo(() =>
+    state.isThinking 
+    ? "bg-thinking"
+    : state.winner !== null && state.winner.color === 1 && state.config.adversary !== 'human'
+    ? "bg-crying"
+    : state.winner !== null && (state.winner.color === 2 || state.config.adversary === 'human')
+    ? "bg-happy"
+    : threats().length > 1
+    ? "bg-surprised"
+    : "bg-speaking"
+  )
 
   const play = async (i: number) => {
     const width = state.config.width;
@@ -121,18 +145,11 @@ const App: Component = () => {
           turn={state.turn}
           scores={state.scores}
           winner={state.winner}
+          threats={threats()}
           canPlay={!state.isThinking && !state.winner}
           play={play}
         />
-        <div
-          class="relative w-[15rem] h-[25rem] bg-contain bg-no-repeat"
-          classList={{
-            "bg-thinking": state.isThinking,
-            "bg-speaking": !state.isThinking && state.winner === null,
-            "bg-crying": !state.isThinking && state.winner !== null && state.winner.color === 1,
-            "bg-happy": !state.isThinking && state.winner !== null && state.winner.color === 2,
-          }}
-        >
+        <div class={`relative w-[15rem] h-[25rem] bg-contain bg-no-repeat ${girlExpression()}`}>
           <Transition
             onEnter={(el, done) => {
               const a = el.animate([
@@ -153,7 +170,7 @@ const App: Component = () => {
               a.finished.then(done);
             }}
           >
-            {state.message && <div class="tooltip">{state.message}</div>}
+            {message() && <div class="tooltip">{message()}</div>}
           </Transition>
         </div>
       </div>

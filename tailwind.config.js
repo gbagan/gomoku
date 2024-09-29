@@ -13,11 +13,15 @@ module.exports = {
         happy: "url('../girl_happy.webp')",
         crying: "url('../girl_crying.webp')",
         speaking: "url('../girl_speaking.webp')",
+        surprised: "url('../girl_surprised.webp')",
         "black-peg": "radial-gradient(closest-corner at 30% 25%, rgb(119, 119, 119), rgb(34, 34, 34))",
         "white-peg": "radial-gradient(closest-corner at 30% 25%, rgb(238, 238, 238), rgb(187, 187, 187))",
       },
       gridTemplateColumns: {
         '20/80': '20% 80%',
+      },
+      boxShadow: {
+        'threat': '0 0 20px red',
       }
     }
   },
