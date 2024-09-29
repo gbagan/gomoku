@@ -1,3 +1,3 @@
-# neuron
+# Gomoku
 
-https://gbagan.github.io/neuron/
+https://gbagan.github.io/gomoku/
