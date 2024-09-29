@@ -47,8 +47,8 @@ const Board: BoardComponent = props => {
       <svg viewBox={`-70 -70 ${140 + 50 * (props.width - 1)} ${140 + 50 * (props.height - 1)}`} class="select-none">
         <defs>
           <radialGradient id="black-gradient" cx="30%" cy="25%" r="100%" fx="30%" fy="25%">
-            <stop offset="0%" style="stop-color:rgb(119, 119, 119);stop-opacity:1" />
-            <stop offset="100%" style="stop-color:rgb(34, 34, 34);stop-opacity:1" />
+            <stop offset="0%" style="stop-color:rgb(109, 109, 109);stop-opacity:1" />
+            <stop offset="100%" style="stop-color:rgb(4, 4, 4);stop-opacity:1" />
           </radialGradient>
           <radialGradient id="white-gradient" cx="30%" cy="25%" r="100%" fx="30%" fy="25%">
             <stop offset="0%" style="stop-color:rgb(238, 238, 238);stop-opacity:1" />
@@ -147,7 +147,6 @@ const Board: BoardComponent = props => {
                     cy="0"
                     r="20"
                     fill={c() === 1 ? "url(#black-gradient)" : "url(#white-gradient)"}
-                    class="pointer-events-none"
                   />
                 }
               </Transition>
@@ -193,6 +192,7 @@ const Board: BoardComponent = props => {
             stroke="red"
             stroke-width="8"
             stroke-linecap="round"
+            class="pointer-events-none"
           />
         }
       </svg>
