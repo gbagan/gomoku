@@ -45,6 +45,16 @@ const Board: BoardComponent = props => {
       }}
     >
       <svg viewBox={`-70 -70 ${140 + 50 * (props.width - 1)} ${140 + 50 * (props.height - 1)}`} class="select-none">
+        <defs>
+          <radialGradient id="black-gradient" cx="30%" cy="25%" r="100%" fx="30%" fy="25%">
+            <stop offset="0%" style="stop-color:rgb(119, 119, 119);stop-opacity:1" />
+            <stop offset="100%" style="stop-color:rgb(34, 34, 34);stop-opacity:1" />
+          </radialGradient>
+          <radialGradient id="white-gradient" cx="30%" cy="25%" r="100%" fx="30%" fy="25%">
+            <stop offset="0%" style="stop-color:rgb(238, 238, 238);stop-opacity:1" />
+            <stop offset="100%" style="stop-color:rgb(187, 187, 187);stop-opacity:1" />
+          </radialGradient>
+        </defs>
         <For each={range(0, props.height)}>
           {i =>
             <>
@@ -106,69 +116,74 @@ const Board: BoardComponent = props => {
             <circle cx={50 * x} cy={50 * y} r="5" fill="black" />
           )}
         </For>
-        <foreignObject x="-25" y="-25" width={props.width * 50} height={props.height * 50}>
-          <div class="relative w-full h-full">
-            <Index each={props.board}>
-              {(c, i) => (
-                <div
-                  class="absolute flex justify-center items-center"
-                  style={{
-                    left: `${50 * (i % props.width)}px`,
-                    top: `${50 * (i / props.width | 0)}px`,
-                    width: "50px",
-                    height: "50px",
-                  }}
-                  onClick={[props.play, i]}
-                  onPointerEnter={[setHover, i]}
-                  onPointerLeave={[setHover, null]}
-                >
-                  <div
-                    class="absolute w-full h-full transition-opacity duration-1000"
-                    style={{
-                      opacity: c() > 0 || !props.scores ? 0 : 0.5,
-                      "background-color": !props.scores ? "transparent" : `rgb(255,${256 * props.scores[i]},0)`,
-                    }}
+        <Index each={props.board}>
+          {(c, i) => (
+            <g transform={`translate(${50 * (i % props.width)} ${50 * (i / props.width | 0)})`}>
+              <rect
+                x="-25"
+                y="-25"
+                width="50"
+                height="50"
+                class="transition-opacity duration-1000"
+                style={{opacity: c() > 0 || !props.scores ? 0 : 0.5}}
+                fill={!props.scores ? "transparent" : `rgb(255,${256 * props.scores[i]},0)`}
+                onClick={[props.play, i]}
+                onPointerEnter={[setHover, i]}
+                onPointerLeave={[setHover, null]}
+              />
+              <Transition
+                onExit={(el, done) => {
+                  const a = el.animate([
+                    { opacity: 1, transform: "translateY(0)" },
+                    { opacity: 0, transform: "translateY(-50px)" }], {
+                    duration: 600
+                  });
+                  a.finished.then(done);
+                }}
+              >
+                {c() !== 0 &&
+                  <circle
+                    cx="0"
+                    cy="0"
+                    r="20"
+                    fill={c() === 1 ? "url(#black-gradient)" : "url(#white-gradient)"}
+                    class="pointer-events-none"
                   />
-                  <Transition
-                    onExit={(el, done) => {
-                      const a = el.animate([
-                        { opacity: 1, transform: "translateY(0)" },
-                        { opacity: 0, transform: "translateY(-4rem)" }], {
-                        duration: 600
-                      });
-                      a.finished.then(done);
-                    }}
-                  >
-                    {c() !== 0 &&
-                      <div
-                        class="rounded-full w-4/5 h-4/5"
-                        classList={{
-                          "bg-black-peg": c() === 1,
-                          "bg-white-peg": c() === 2,
-                          "shadow-lg shadow-white": i === props.lastMove,
-                        }}
-                      />
-                    }
-                  </Transition>
-                  <Show when={props.threats.includes(i)}>
-                    <div
-                      class="absolute rounded-full w-4/5 h-4/5 bg-red-500 bg-opacity-70 shadow-threat animate-pulse"
-                    />
-                  </Show>
-                  <Show when={props.canPlay && c() === 0 && hover() === i}>
-                    <div
-                      class="rounded-full w-4/5 h-4/5 opacity-50 animate-peg"
-                      classList={{
-                        "bg-black-peg": props.turn === 1,
-                        "bg-white-peg": props.turn === 2,
-                      }}
-                    />
-                  </Show>
-                </div>
-              )}
-            </Index>
-          </div>
-        </foreignObject>
+                }
+              </Transition>
+              <Show when={props.canPlay && c() === 0 && hover() === i}>
+                <circle
+                  cx="0"
+                  cy="0"
+                  r="20"
+                  fill={props.turn === 1 ? "url(#black-gradient)" : "url(#white-gradient)"}
+                  opacity="0.7"
+                  class="pointer-events-none animate-peg"
+                />
+              </Show>
+              <Show when={props.threats.includes(i)}>
+                <circle
+                  cx="0"
+                  cy="0"
+                  r="20"
+                  fill="red"
+                  filter="drop-shadow(0px 0px 5px red)"
+                  class="animate-threat"
+                />
+              </Show>
+            </g>
+          )}
+        </Index>
+        {props.lastMove !== null &&
+          <circle
+            cx={50*(props.lastMove % props.width)}
+            cy={50*(props.lastMove / props.width | 0)}
+            r="10"
+            stroke={props.turn === 1 ? "black" : "white"}
+            stroke-width="3"
+            fill="transparent"
+          />
+        }
         {props.winner &&
           <line
             x1={50 * (props.winner.alignment[0] % props.width)}

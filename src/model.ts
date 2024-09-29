@@ -34,7 +34,7 @@ export const newState: () => State = () => {
     board,
     turn: 1,
     played: [],
-    scores: [],
+    scores: null,
     config: newConfig(),
     winner: null,
     isThinking: false,

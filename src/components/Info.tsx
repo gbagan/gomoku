@@ -78,7 +78,6 @@ const Info: InfoComponent = props => {
       </Transition>
     </div>
   )
-
 }
 
 export default Info;

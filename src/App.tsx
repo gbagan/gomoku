@@ -29,6 +29,7 @@ const App: Component = () => {
       let won = hasWon(width, height, state.board, state.config.alignment, state.turn, i);
       if (won) {
         state.winner = won;
+        state.turn = 3 - state.turn;
         return;
       }
       if (state.config.adversary !== 'human') {

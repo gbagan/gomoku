@@ -15,8 +15,6 @@ export default {
         crying: "url('../girl_crying.webp')",
         speaking: "url('../girl_speaking.webp')",
         surprised: "url('../girl_surprised.webp')",
-        "black-peg": "radial-gradient(closest-corner at 30% 25%, rgb(119, 119, 119), rgb(34, 34, 34))",
-        "white-peg": "radial-gradient(closest-corner at 30% 25%, rgb(238, 238, 238), rgb(187, 187, 187))",
       },
       gridTemplateColumns: {
         '20/80': '20% 80%',
@@ -25,17 +23,28 @@ export default {
         'threat': '0 0 20px red',
       },
       animation: {
-        'flip-anim': 'flip 500ms linear forwards',
+        'flip-anim': 'flipy 500ms linear forwards',
         'peg': 'peg 1s ease-in-out infinite',
+        'threat': 'threat 2s cubic-bezier(0.4, 0, 0.6, 1) infinite',
       },
       keyframes: {
-        flip: {
+        flipy: {
           '0%': { opacity: '0', transform: 'rotateY(180deg)' },
           '100%': { opacity: '1', transform: 'rotateY(0)' },
         },
         peg: {
-          '0%, 100%': { transform: 'translateY(0)', 'box-shadow': 'none'},
-          '50%': { transform: 'translateY(-0.5rem)', 'box-shadow': '0 0.4rem 0.4rem rgba(0,0,0,0.7)' },
+          '0%, 100%': {
+            transform: 'translateY(0)',
+            filter: 'drop-shadow(0px 0px 0px rgba(0, 0, 0, 0.7))',
+          },
+          '50%': {
+            transform: 'translateY(-10px)',
+            filter: 'drop-shadow(0 10px 8px rgba(0, 0, 0, 0.7))',
+          }
+        },
+        threat: {
+          '0%, 100%': {opacity: '0.7'},
+          '50%': {opacity: '0.35'},
         }
       }
     }
