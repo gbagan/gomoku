@@ -125,7 +125,7 @@ const Board: BoardComponent = props => {
                 width="50"
                 height="50"
                 class="transition-opacity duration-1000"
-                style={{opacity: c() > 0 || !props.scores ? 0 : 0.5}}
+                style={{ opacity: c() > 0 || !props.scores ? 0 : 0.5 }}
                 fill={!props.scores ? "transparent" : `rgb(255,${256 * props.scores[i]},0)`}
                 onClick={[props.play, i]}
                 onPointerEnter={[setHover, i]}
@@ -150,33 +150,37 @@ const Board: BoardComponent = props => {
                   />
                 }
               </Transition>
-              <Show when={props.canPlay && c() === 0 && hover() === i}>
-                <circle
-                  cx="0"
-                  cy="0"
-                  r="20"
-                  fill={props.turn === 1 ? "url(#black-gradient)" : "url(#white-gradient)"}
-                  opacity="0.7"
-                  class="pointer-events-none animate-peg"
-                />
-              </Show>
-              <Show when={props.threats.includes(i)}>
-                <circle
-                  cx="0"
-                  cy="0"
-                  r="20"
-                  fill="red"
-                  filter="drop-shadow(0px 0px 5px red)"
-                  class="pointer-events-none animate-threat"
-                />
-              </Show>
             </g>
           )}
         </Index>
+        <Show when={props.canPlay && hover() !== null && props.board[hover()!] === 0}>
+          <circle
+            cx={50 * (hover()! % props.width)}
+            cy={50 * (hover()! / props.width | 0)}
+            r="20"
+            fill={props.turn === 1 ? "url(#black-gradient)" : "url(#white-gradient)"}
+            opacity="0.7"
+            class="pointer-events-none animate-peg"
+          />
+        </Show>
+        <Show when={props.winner === null && props.canPlay}>
+          <For each={props.threats}>
+            {threat =>
+              <circle
+                cx={50 * (threat % props.width)}
+                cy={50 * (threat / props.width | 0)}
+                r="20"
+                fill="red"
+                filter="drop-shadow(0px 0px 5px red)"
+                class="pointer-events-none animate-threat"
+              />
+            }
+          </For>
+        </Show>
         {props.lastMove !== null &&
           <circle
-            cx={50*(props.lastMove % props.width)}
-            cy={50*(props.lastMove / props.width | 0)}
+            cx={50 * (props.lastMove % props.width)}
+            cy={50 * (props.lastMove / props.width | 0)}
             r="10"
             stroke={props.turn === 1 ? "black" : "white"}
             stroke-width="3"
