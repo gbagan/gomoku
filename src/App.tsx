@@ -110,9 +110,11 @@ const App: Component = () => {
   return (
     <>
       <div class="w-screen min-h-screen bg-main bg-cover flex flew-row items-center justify-around portrait:flex-col">
-        <div class="flex flex-col bg-wood">
+        <div class="flex flex-col bg-wood p-6 border-2 border-black rounded-xl gap-4">
+          <div class="text-4xl">Gomoku</div>
           <button class="btn" onClick={openNewGameDialog}>Nouvelle partie</button>
           <button class="btn" onClick={undo}>Annuler</button>
+          <button class="btn">Information</button>
         </div>
         <Board
           board={state.board}

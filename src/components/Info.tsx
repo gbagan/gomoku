@@ -5,7 +5,7 @@ import { delay } from "../util";
 
 const messages: [string, number][] = [
   ["Bienvenue sur l'appli Gomoku", 4000],
-  ["Gomoku connu aussi sous le nom de Darpion est un jeu positionnel.", 5000],
+  ["Gomoku connu aussi sous le nom de Darpion est un jeu positionnel japonais d'origine chinoise.", 5000],
   ["Il existe de nombreuses variantes: Libre, Renju, Caro, Omok, Ninuki-renju", 5000]
 ]
 
