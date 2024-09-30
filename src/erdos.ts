@@ -64,7 +64,7 @@ function erdosSelfridge(width: number, height: number, board: number[], alignmen
         }
       }
       if (!skip) {
-        score += 1 / 2 ** (alignment - n);
+        score += 1 / 3 ** (alignment - n);
       }
     }
   }
@@ -78,7 +78,7 @@ export function erdosTable(width: number, height: number, board: number[], len: 
   for (let i = 0; i < n; i++){
     if (board[i] === 0) {
       board[i] = 3 - color;
-      table[i] = erdosSelfridge(width, height, board, len, color);
+      table[i] = erdosSelfridge(width, height, board, len, color) - erdosSelfridge(width, height, board, len, 3 - color);
       board[i] = 0;
     }
   }
