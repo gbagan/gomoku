@@ -37,12 +37,12 @@ const App: Component = () => {
         state.turn = 3 - state.turn;
         return;
       }
+      state.turn = 3 - state.turn;
       if (state.config.adversary !== 'human') {
         state.isThinking = true;
         table = erdosTable(state.config.width, state.config.height, [...state.board], state.config.alignment, state.turn);
         state.scores = table;
       }
-      state.turn = 3 - state.turn;
     }));
 
     if (!state.outcome && state.config.adversary !== 'human') {

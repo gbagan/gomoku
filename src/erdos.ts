@@ -13,7 +13,7 @@ function erdosSelfridge(width: number, height: number, board: number[], alignmen
         }
       }
       if (!skip) {
-        score += 1 / 2 ** (alignment - n);
+        score += 1 / 4 ** (alignment - n);
       }
     }
   }
@@ -30,7 +30,7 @@ function erdosSelfridge(width: number, height: number, board: number[], alignmen
         }
       }
       if (!skip) {
-        score += 1 / 2 ** (alignment - n);
+        score += 1 / 4 ** (alignment - n);
       }
     }
   }
@@ -47,7 +47,7 @@ function erdosSelfridge(width: number, height: number, board: number[], alignmen
         }
       }
       if (!skip) {
-        score += 1 / 2 ** (alignment - n);
+        score += 1 / 4 ** (alignment - n);
       }
     }
   }
@@ -64,7 +64,7 @@ function erdosSelfridge(width: number, height: number, board: number[], alignmen
         }
       }
       if (!skip) {
-        score += 1 / 3 ** (alignment - n);
+        score += 1 / 4 ** (alignment - n);
       }
     }
   }
@@ -72,29 +72,32 @@ function erdosSelfridge(width: number, height: number, board: number[], alignmen
 }
 
 export function erdosTable(width: number, height: number, board: number[], len: number, color: number): number[] {
+  console.log(color);
   const n = board.length;
   const table = new Array(n);
-  table.fill(Infinity);
+  table.fill(-Infinity);
   for (let i = 0; i < n; i++){
     if (board[i] === 0) {
+      board[i] =  color;
+      table[i] = 1.5 * erdosSelfridge(width, height, board, len, color);
       board[i] = 3 - color;
-      table[i] = erdosSelfridge(width, height, board, len, color) - erdosSelfridge(width, height, board, len, 3 - color);
+      table[i] += erdosSelfridge(width, height, board, len, 3 - color);
       board[i] = 0;
     }
   }
 
-  let min = Math.min(...table);
-  let max = Math.max(...table.filter(n => n !== Infinity));
+  let min = Math.min(...table.filter(n => n !== -Infinity));
+  let max = Math.max(...table);
 
-  return table.map(i => i == Infinity ? Infinity : min === max ? 1 : (i - min) / (max - min));
+  return table.map(i => i == -Infinity ? -Infinity : min === max ? 0 : (i - min) / (max - min));
 }
 
 export function computerMove(table: number[]): number {
   const n = table.length;
-  const min = Math.min(...table);
+  const max = Math.max(...table);
   const moves = [];
   for (let i = 0; i < n; i++) {
-    if (table[i] === min) {
+    if (table[i] === max) {
       moves.push(i);
     }
   }

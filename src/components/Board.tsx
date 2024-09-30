@@ -126,7 +126,7 @@ const Board: BoardComponent = props => {
                 height="50"
                 class="transition-opacity duration-1000"
                 style={{ opacity: c() > 0 || !props.scores ? 0 : 0.5 }}
-                fill={!props.scores ? "transparent" : `rgb(255,${256 * props.scores[i]},0)`}
+                fill={!props.scores ? "transparent" : `rgb(255,${256 * (1 - props.scores[i])},0)`}
                 onClick={[props.play, i]}
                 onPointerEnter={[setHover, i]}
                 onPointerLeave={[setHover, null]}
