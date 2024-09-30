@@ -23,12 +23,12 @@ export default {
         'threat': '0 0 20px red',
       },
       animation: {
-        'flip-anim': 'flipy 500ms linear forwards',
+        'flip-y': 'flip-y 500ms linear forwards',
         'peg': 'peg 1s ease-in-out infinite',
         'threat': 'threat 2s cubic-bezier(0.4, 0, 0.6, 1) infinite',
       },
       keyframes: {
-        flipy: {
+        "flip-y": {
           '0%': { opacity: '0', transform: 'rotateY(180deg)' },
           '100%': { opacity: '1', transform: 'rotateY(0)' },
         },

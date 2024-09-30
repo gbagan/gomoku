@@ -1,7 +1,7 @@
 import range from "lodash.range";
 import { Component, createMemo, createSignal, For, Index, Show } from "solid-js";
 import { Transition } from "solid-transition-group";
-import { Winner } from "../model";
+import { Outcome } from "../model";
 
 const alphabet = "ABCDEFGHIJKLMNOPQRSTUVWXYZ";
 
@@ -13,7 +13,7 @@ type BoardComponent = Component<{
   scores: number[] | null,
   turn: number,
   canPlay: boolean,
-  winner: Winner,
+  outcome: Outcome,
   threats: number[],
   play: (i: number) => void,
 }>
@@ -163,7 +163,7 @@ const Board: BoardComponent = props => {
             class="pointer-events-none animate-peg"
           />
         </Show>
-        <Show when={props.winner === null && props.canPlay}>
+        <Show when={!props.outcome && props.canPlay}>
           <For each={props.threats}>
             {threat =>
               <circle
@@ -188,12 +188,12 @@ const Board: BoardComponent = props => {
             class="pointer-events-none"
           />
         }
-        {props.winner &&
+        {props.outcome && props.outcome.color !== 0 &&
           <line
-            x1={50 * (props.winner.alignment[0] % props.width)}
-            x2={50 * (props.winner.alignment[1] % props.width)}
-            y1={50 * (props.winner.alignment[0] / props.width | 0)}
-            y2={50 * (props.winner.alignment[1] / props.width | 0)}
+            x1={50 * (props.outcome.alignment[0] % props.width)}
+            x2={50 * (props.outcome.alignment[1] % props.width)}
+            y1={50 * (props.outcome.alignment[0] / props.width | 0)}
+            y2={50 * (props.outcome.alignment[1] / props.width | 0)}
             stroke="red"
             stroke-width="8"
             stroke-linecap="round"

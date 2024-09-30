@@ -1,6 +1,6 @@
 import { Component, createMemo, createSignal, onMount } from "solid-js";
 import { Transition } from "solid-transition-group";
-import { Adversary, Winner } from "../model";
+import { Adversary, Outcome } from "../model";
 import { delay } from "../util";
 
 const messages: [string, number][] = [
@@ -11,7 +11,7 @@ const messages: [string, number][] = [
 
 type InfoComponent = Component<{
   multipleThreats: boolean,
-  winner: Winner,
+  outcome: Outcome,
   turn: number,
   isThinking: boolean,
   adversary: Adversary,
@@ -21,8 +21,10 @@ const Info: InfoComponent = props => {
   const [periodicMessage, setPeriodicMessage] = createSignal<string | null>("");
   
   const message = createMemo(() =>
-    props.winner !== null
-    ? `Le joueur ${props.winner.color === 1 ? "noir" : "blanc"} a gagné la partie. Tu peux changer le niveau de difficulté en clickant sur "Nouvelle partie".`
+    props.outcome !== null && props.outcome.color === 0
+    ? 'Match nul! Tu peux changer le niveau de difficulté en clickant sur "Nouvelle partie".'    
+    : props.outcome !== null
+    ? `Le joueur ${props.outcome.color === 1 ? "noir" : "blanc"} a gagné la partie. Tu peux changer le niveau de difficulté en clickant sur "Nouvelle partie".`
     : props.multipleThreats
     ? `Le joueur ${props.turn === 1 ? "blanc" : "noir"} a réussi une menace multiple. Il peut gagner la partie quoique réponde l'adversaire.`
     : periodicMessage()
@@ -31,9 +33,9 @@ const Info: InfoComponent = props => {
   const girlExpression = createMemo(() =>
     props.isThinking
     ? "bg-thinking"
-    : props.winner !== null && props.winner.color === 1 && props.adversary !== 'human'
+    : props.outcome !== null && props.outcome.color === 1 && props.adversary !== 'human'
     ? "bg-crying"
-    : props.winner !== null && (props.winner.color === 2 || props.adversary === 'human')
+    : props.outcome !== null && (props.outcome.color === 2 || props.adversary === 'human')
     ? "bg-happy"
     : props.multipleThreats
     ? "bg-surprised"

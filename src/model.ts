@@ -7,7 +7,7 @@ export type Config = {
   alignment: number,
 }
 
-export type Winner = { color: number, alignment: [number, number] } | null;
+export type Outcome = { color: number, alignment: [number, number] } | null;
 
 export type State = {
   board: number[],
@@ -15,7 +15,7 @@ export type State = {
   played: number[],
   scores: number[] | null,
   config: Config,
-  winner: Winner,
+  outcome: Outcome,
   isThinking: boolean,
   dialogOpened: boolean,
 }
@@ -37,7 +37,7 @@ export const newState: () => State = () => {
     played: [],
     scores: null,
     config: newConfig(),
-    winner: null,
+    outcome: null,
     isThinking: false,
     dialogOpened: false,
   };

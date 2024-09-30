@@ -7,4 +7,4 @@
 - [ ] Bug on undo when the game is finished and the player wins
 - [x] Danger squares must be yellow when the player cannot win
 - [x] Threat points must not appear when the game is finished
-- [ ] Manage draw games
+- [x] Manage draw games

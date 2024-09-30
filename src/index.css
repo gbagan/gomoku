@@ -44,7 +44,7 @@
   }
   
   .dialog[open] {
-    @apply animate-flip-anim;
+    @apply animate-flip-y;
   }
 
   .dialog-title {
