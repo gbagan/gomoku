@@ -75,7 +75,7 @@ const App: Component = () => {
         state.turn = 3 - state.turn;
         state.outcome = null;
       }
-      if (state.played.length && state.config.adversary !== 'human') {
+      if (state.played.length % 2 === 1 && state.config.adversary !== 'human') {
         const move = state.played.pop();
         state.board[move!] = 0;
         state.turn = 3 - state.turn;
