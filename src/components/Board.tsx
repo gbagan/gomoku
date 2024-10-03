@@ -38,7 +38,7 @@ const Board: BoardComponent = props => {
 
   return (
     <div
-      class="bg-wood border-4 border-black rounded-3xl relative"
+      class="bg-wood border-4 border-black rounded-3xl relative z-20"
       style={{
         width: `${dimensions()[0]}rem`,
         height: `${dimensions()[1]}rem`,

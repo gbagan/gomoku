@@ -62,7 +62,7 @@ const Info: InfoComponent = props => {
   })
 
   return (
-    <div class={`relative w-[15rem] h-[25rem] bg-contain bg-no-repeat ${girlExpression()}`}>
+    <div class={`relative w-[15rem] h-[25rem] bg-contain bg-no-repeat z-20 ${girlExpression()}`}>
       <Transition
         onEnter={(el, done) => {
           const a = el.animate([

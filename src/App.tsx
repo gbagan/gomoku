@@ -113,7 +113,8 @@ const App: Component = () => {
   return (
     <>
       <audio src="./move.webm" preload="auto" ref={moveAudio} />
-      <div class="w-screen min-h-screen bg-main bg-cover flex flew-row items-center justify-around portrait:flex-col">
+      <div class="relative w-screen min-h-screen z-20 bg-main bg-cover flex flew-row items-center justify-around portrait:flex-col">
+        <div class="absolute bg-white w-full h-full opacity-30 z-10 pointer-events-none"/>
         <div class="flex flex-col bg-wood p-6 border-2 border-black rounded-xl gap-4">
           <div class="text-4xl">Gomoku</div>
           <button class="btn" onClick={openNewGameDialog}>Nouvelle partie</button>
