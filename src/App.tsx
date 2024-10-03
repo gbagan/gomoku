@@ -9,6 +9,7 @@ import Info from './components/Info';
 
 const App: Component = () => {
   let newGameDialog!: HTMLDialogElement;
+  let moveAudio!: HTMLAudioElement;
 
   const [state, setState] = createStore(newState());
 
@@ -23,6 +24,7 @@ const App: Component = () => {
     if (state.isThinking || state.outcome || state.board[i] !== 0)
       return;
 
+    moveAudio.play();
     setState(produce(state => {
       state.board[i] = state.turn;
       state.played.push(i);
@@ -49,6 +51,7 @@ const App: Component = () => {
       await delay(1500);
       setState(produce(state => {
         let j = computerMove(table);
+        moveAudio.play();
         state.board[j] = state.turn;
         state.played.push(j);
         state.scores = null;
@@ -109,6 +112,7 @@ const App: Component = () => {
 
   return (
     <>
+      <audio src="./move.webm" preload="auto" ref={moveAudio} />
       <div class="w-screen min-h-screen bg-main bg-cover flex flew-row items-center justify-around portrait:flex-col">
         <div class="flex flex-col bg-wood p-6 border-2 border-black rounded-xl gap-4">
           <div class="text-4xl">Gomoku</div>

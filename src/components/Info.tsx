@@ -1,12 +1,14 @@
-import { Component, createMemo, createSignal, onMount } from "solid-js";
+import { Component, createMemo, createSignal, JSXElement, onMount } from "solid-js";
 import { Transition } from "solid-transition-group";
 import { Adversary, Outcome } from "../model";
 import { delay } from "../util";
 
-const messages: [string, number][] = [
-  ["Bienvenue sur l'appli Gomoku", 4000],
-  ["Gomoku connu aussi sous le nom de Darpion est un jeu positionnel japonais d'origine chinoise.", 5000],
-  ["Il existe de nombreuses variantes: Libre, Renju, Caro, Omok, Ninuki-renju", 5000]
+const Emph = (props: {children: string}) => <span class="text-blue-500 font-bold">{props.children}</span>
+
+const messages: [JSXElement, number][] = [
+  [<>Bienvenue sur l'appli <Emph>Gomoku</Emph></>, 4000],
+  [<><Emph>Gomoku</Emph> connu aussi sous le nom de Darpion est un jeu positionnel japonais d'origine chinoise.</>, 5000],
+  [<>Il existe de nombreuses variantes: Libre, <Emph>Renju</Emph>, <Emph>Caro</Emph>, <Emph>Omok</Emph>, <Emph>Ninuki-renju</Emph></>, 5000]
 ]
 
 type InfoComponent = Component<{
@@ -18,26 +20,31 @@ type InfoComponent = Component<{
 }>
 
 const Info: InfoComponent = props => {
-  const [periodicMessage, setPeriodicMessage] = createSignal<string | null>("");
+  const [periodicMessage, setPeriodicMessage] = createSignal<JSXElement | null>("");
   
   const message = createMemo(() =>
-    props.outcome !== null && props.outcome.color === 0
-    ? 'Match nul! Tu peux changer le niveau de difficulté en clickant sur "Nouvelle partie".'    
-    : props.outcome !== null
-    ? `Le joueur ${props.outcome.color === 1 ? "noir" : "blanc"} a gagné la partie. Tu peux changer le niveau de difficulté en clickant sur "Nouvelle partie".`
+    props.outcome !== null
+    ? (props.outcome.color === 0
+      ? 'Match nul! Tu peux changer le niveau de difficulté en clickant sur "Nouvelle partie".'    
+      : props.adversary === 'human'
+      ? <>Le joueur {props.outcome.color === 1 ? "noir" : "blanc"} a gagné la partie. Tu peux jouer contre l'IA en clickant sur <Emph>Nouvelle partie</Emph>.</>
+      : props.outcome.color === 1
+      ? <>Zut! J'ai perdu! Tu peux changer de difficulté en clickant sur <Emph>Nouvelle partie</Emph>!</>
+      : <>Oh oui! J'ai gagné! Tu peux changer de difficulté en clickant sur <Emph>Nouvelle partie</Emph>!`</>
+      )
     : props.multipleThreats
-    ? `Le joueur ${props.turn === 1 ? "blanc" : "noir"} a réussi une menace multiple. Il peut gagner la partie quoique réponde l'adversaire.`
+    ? <>Le joueur {props.turn === 1 ? "blanc" : "noir"} a réussi une <Emph>menace multiple</Emph>. Il peut gagner la partie quoique réponde l'adversaire.</>
     : periodicMessage()
   )
 
   const girlExpression = createMemo(() =>
     props.isThinking
     ? "bg-thinking"
-    : props.outcome !== null && props.outcome.color === 1 && props.adversary !== 'human'
+    : props.outcome?.color === 1 && props.adversary !== 'human'
     ? "bg-crying"
-    : props.outcome !== null && (props.outcome.color === 2 || props.adversary === 'human')
+    : props.outcome?.color === 2 || props.outcome?.color === 1 && props.adversary === 'human'
     ? "bg-happy"
-    : props.multipleThreats
+    : props.multipleThreats || props.outcome?.color === 0
     ? "bg-surprised"
     : "bg-speaking"
   )
