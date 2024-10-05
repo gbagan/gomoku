@@ -17,7 +17,7 @@ export type State = {
   config: Config,
   outcome: Outcome,
   isThinking: boolean,
-  dialogOpened: boolean,
+  dialog: "newgame" | "rules" | "credits" | null,
 }
 
 export const newConfig: () => Config = () => ({
@@ -39,7 +39,7 @@ export const newState: () => State = () => {
     config: newConfig(),
     outcome: null,
     isThinking: false,
-    dialogOpened: false,
+    dialog: null,
   };
 }
 

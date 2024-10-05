@@ -6,11 +6,13 @@ import { computerMove, erdosTable } from './erdos';
 import { Config, getThreats, hasWon, newState } from './model';
 import NewGame from './components/NewGame';
 import Info from './components/Info';
+import Rules from './components/Rules';
+import Credits from './components/Credits';
 const App: Component = () => {
-  let newGameDialog!: HTMLDialogElement;
+  let dialog!: HTMLDialogElement;
   let moveAudio!: HTMLAudioElement;
   const [state, setState] = createStore(newState());
-  const threats = createMemo(() => 
+  const threats = createMemo(() =>
     getThreats(state.config.width, state.config.height, state.board, state.config.alignment, 3 - state.turn)
   )
   const play = async (i: number) => {
@@ -78,12 +80,23 @@ const App: Component = () => {
     }));
   }
   const openNewGameDialog = () => {
-    setState("dialogOpened", true);
-    newGameDialog.showModal();
+    setState("dialog", "newgame");
+    dialog.showModal();
   }
-  const closeNewGameDialog = () => {
-    newGameDialog.close();
-    setState("dialogOpened", false);
+
+  const openRulesDialog = () => {
+    setState("dialog", "rules");
+    dialog.showModal();
+  }
+
+  const openCreditsDialog = () => {
+    setState("dialog", "credits");
+    dialog.showModal();
+  }
+
+  const closeDialog = () => {
+    dialog.close();
+    setState("dialog", null);
   }
   const newGame = (config: Config) => {
     setState(produce(state => {
@@ -94,20 +107,21 @@ const App: Component = () => {
       state.outcome = null;
       state.turn = 1;
       state.isThinking = false;
-      state.dialogOpened = false;
+      state.dialog = null;
     }))
-    newGameDialog.close();
+    dialog.close();
   }
   return (
     <>
       <audio src="./move.webm" preload="auto" ref={moveAudio} />
       <div class="relative w-screen min-h-screen z-20 bg-main bg-cover flex flew-row items-center justify-around portrait:flex-col">
-        <div class="absolute bg-white w-full h-full opacity-30 z-10 pointer-events-none"/>
-        <div class="flex flex-col bg-wood p-6 border-2 border-black rounded-xl gap-4">
+        <div class="absolute bg-white w-full h-full opacity-30 z-10 pointer-events-none" />
+        <div class="z-20 flex flex-col bg-wood p-6 border-2 border-black rounded-xl gap-4">
           <div class="text-4xl">Gomoku</div>
           <button class="btn" onClick={openNewGameDialog}>Nouvelle partie</button>
           <button class="btn" onClick={undo}>Annuler</button>
-          <button class="btn">Information</button>
+          <button class="btn" onClick={openRulesDialog}>Règles</button>
+          <button class="btn" onClick={openCreditsDialog}>Crédits</button>
         </div>
         <Board
           board={state.board}
@@ -131,16 +145,21 @@ const App: Component = () => {
       </div>
       <dialog
         class="dialog"
-        ref={newGameDialog}
-        onCancel={closeNewGameDialog}
-        onClose={closeNewGameDialog}
+        ref={dialog}
+        onCancel={closeDialog}
+        onClose={closeDialog}
       >
-        {state.dialogOpened && 
-          <NewGame
+        {state.dialog === "newgame"
+          ? <NewGame
             config={state.config}
-            closeDialog={closeNewGameDialog}
+            closeDialog={closeDialog}
             newGame={newGame}
           />
+          : state.dialog === "rules"
+          ? <Rules closeDialog={closeDialog} />
+          : state.dialog === "credits"
+          ? <Credits closeDialog={closeDialog} />
+          : null
         }
       </dialog>
     </>
