@@ -1,0 +1,168 @@
+import range from "lodash.range";
+import { Component, createMemo, createSignal, For, Index, Show } from "solid-js";
+import { Transition } from "solid-transition-group";
+import { Outcome } from "../model";
+
+alphabet := "ABCDEFGHIJKLMNOPQRSTUVWXYZ";
+
+type BoardComponent = Component<{
+  board: number[]
+  width: number
+  height: number
+  lastMove: number | null
+  scores: number[] | null
+  turn: number
+  canPlay: boolean
+  outcome: Outcome
+  threats: number[]
+  play: (i: number) => void
+}>
+
+Board: BoardComponent := (props) =>
+  [hover, setHover] := createSignal<number | null> null
+
+  dimensions := createMemo =>
+    x := 0.06 * (140 + 50 * (props.width - 1))
+    y := 0.06 * (140 + 50 * (props.height - 1))
+    m := Math.max(x, y);
+    if m > 50 then [x * 42 / m, y * 42 / m] else [x, y]
+
+  points := =>
+    mx := props.width / 2 | 0
+    my := props.height / 2 | 0
+    qx := mx / 2 | 0
+    qy := my / 2 | 0
+    [[mx, my], [mx - qx, my - qy], [mx + qx, my - qy], [mx - qx, my + qy], [mx + qx, my + qy]]
+
+  <div
+    class="bg-wood border-4 border-black rounded-3xl relative z-20"
+    style={
+      width: `${dimensions()[0]}rem`
+      height: `${dimensions()[1]}rem`
+    }
+  >
+    <svg viewBox={`-70 -70 ${140 + 50 * (props.width - 1)} ${140 + 50 * (props.height - 1)}`} class="select-none">
+      <defs>
+        <radialGradient #black-gradient cx="30%" cy="25%" r="100%" fx="30%" fy="25%">
+          <stop offset="0%" style="stop-color:rgb(109, 109, 109);stop-opacity:1" />
+          <stop offset="100%" style="stop-color:rgb(4, 4, 4);stop-opacity:1" />
+        <radialGradient #white-gradient cx="30%" cy="25%" r="100%" fx="30%" fy="25%">
+          <stop offset="0%" style="stop-color:rgb(238, 238, 238);stop-opacity:1" />
+          <stop offset="100%" style="stop-color:rgb(187, 187, 187);stop-opacity:1" />
+      <For each={range(0, props.height)}>
+        {(i) =>
+          <line
+            x1="0"
+            x2={50 * (props.width - 1)}
+            y1={50 * i}
+            y2={50 * i}
+            stroke="black"
+            stroke-width="1"
+          />
+          <text .boardtext x="-50" y=50*i>
+            {props.height - i}
+          <text .boardtext x={50 * (props.width - 1) + 50} y={50 * i}>
+            {props.height - i}
+        }
+      <For each={range(0, props.width)}>
+        {(i) =>
+            <line
+              y1="0"
+              y2={50 * (props.height - 1)}
+              x1={50 * i}
+              x2={50 * i}
+              stroke="black"
+              stroke-width="1"
+            />
+            <text .boardtext y="-50" x=50*i>
+              {alphabet[i]}
+            <text .boardtext x={50*i} y={50 * (props.height - 1) + 50}>
+              {alphabet[i]}
+        }
+      <For each={points()}>
+        {[x, y] =>
+          <circle cx=50*x cy=50*y r="5" fill="black" />
+        }
+      <Index each={props.board}>
+        {(c, i) =>
+          <g transform=`translate(${50 * (i % props.width)} ${50 * (i / props.width | 0)})`>
+            <rect
+              x="-25"
+              y="-25"
+              width="50"
+              height="50"
+              class="transition-opacity duration-1000"
+              style={ opacity: c() > 0 || !props.scores ? 0 : 0.5 }
+              fill={!props.scores ? "transparent" : `rgb(255,${256 * (1 - props.scores[i])},0)`}
+              onClick={[props.play, i]}
+              onPointerEnter={[setHover, i]}
+              onPointerLeave={[setHover, null]}
+            />
+            <Transition
+              onExit={(el, done) => {
+                a := el.animate([
+                  { opacity: 1, transform: "translateY(0)" },
+                  { opacity: 0, transform: "translateY(-50px)" }], {
+                  duration: 600
+                })
+                a.finished.then(done);
+              }}
+            >
+              {c() !== 0 &&
+                <circle
+                  cx="0"
+                  cy="0"
+                  r="20"
+                  fill={c() === 1 ? "url(#black-gradient)" : "url(#white-gradient)"}
+                />
+              }
+          }
+
+      <Show when={props.canPlay && hover() !== null && props.board[hover()!] === 0}>
+        <circle
+          cx={50 * (hover()! % props.width)}
+          cy={50 * (hover()! / props.width | 0)}
+          r="20"
+          fill={props.turn === 1 ? "url(#black-gradient)" : "url(#white-gradient)"}
+          opacity="0.7"
+          class="pointer-events-none animate-peg"
+        />
+
+      <Show when={!props.outcome && props.canPlay}>
+        <For each={props.threats}>
+          {(threat) =>
+            <circle
+              cx={50 * (threat % props.width)}
+              cy={50 * (threat / props.width | 0)}
+              r="20"
+              fill="red"
+              filter="drop-shadow(0px 0px 5px red)"
+              class="pointer-events-none animate-threat"
+            />
+          }
+
+      {props.lastMove !== null &&
+        <circle
+          cx={50 * (props.lastMove % props.width)}
+          cy={50 * (props.lastMove / props.width | 0)}
+          r="10"
+          stroke={props.turn === 1 ? "black" : "white"}
+          stroke-width="3"
+          fill="transparent"
+          class="pointer-events-none"
+        />
+      }
+      {props.outcome && props.outcome.color !== 0 &&
+        <line
+          x1={50 * (props.outcome.alignment[0] % props.width)}
+          x2={50 * (props.outcome.alignment[1] % props.width)}
+          y1={50 * (props.outcome.alignment[0] / props.width | 0)}
+          y2={50 * (props.outcome.alignment[1] / props.width | 0)}
+          stroke="red"
+          stroke-width="8"
+          stroke-linecap="round"
+          class="pointer-events-none"
+        />
+      }
+
+export default Board

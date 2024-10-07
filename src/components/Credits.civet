@@ -1,0 +1,16 @@
+import { Component } from "solid-js"
+import Emph from "./Emph"
+
+Rules: Component<{closeDialog: => void}> := (props) =>
+  <div .dialog-title>Règles de Catch the lion
+  <div .dialog-body>
+    <ul>
+      <li .list-disc>L&#39;application <Emph>Gomoku</Emph> a été écrite par Guillaume Bagan.
+      <li .list-disc>Le code source est sous licence MIT.
+      <li .list-disc>Les différentes images ont été générées par Dall-E.
+      <li .list-disc>Les différents sons proviennent de la plate-forme Lichess.
+      <li .list-disc>L&#39;application a été écrite dans le langage Civet en utilisant les librairies Solid et Tailwind.
+  <div .dialog-buttons>
+    <button .btn onClick={props.closeDialog}>OK</button>
+
+export default Rules

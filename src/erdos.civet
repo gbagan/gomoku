@@ -1,0 +1,81 @@
+function erdosSelfridge(width: number, height: number, board: number[], alignment: number, color: number): number
+  score .= 0
+  for j .= 0; j < height; j++
+    for i .= 0; i <= width-alignment; i++
+      n .= 0
+      skip .= false
+      for k .= 0; k < alignment; k++
+        index := width * j + i + k;
+        if (board[index] === color)
+          n++
+        else if board[index] === 3 - color
+          skip = true
+      if !skip
+        score += 1 / 4 ** (alignment - n);
+
+  for j .= 0; j <= height-alignment; j++
+    for i .= 0; i < width; i++
+      n .= 0
+      skip .= false
+      for k .= 0; k < alignment; k++
+        index := width * (j + k) + i
+        if board[index] === color
+          n++
+        else if board[index] === 3 - color
+          skip = true
+      if !skip
+        score += 1 / 4 ** (alignment - n)
+
+  for j .= 0; j <= height-alignment; j++
+    for i .= 0; i <= width-alignment; i++
+      n .= 0
+      skip .= false
+      for k .= 0; k < alignment; k++
+        index := width * (j + k) + i + k;
+        if board[index] === color
+          n++;
+        else if board[index] === 3 - color
+          skip = true
+      if !skip
+        score += 1 / 4 ** (alignment - n)
+ 
+  for j .= 0; j <= height-alignment; j++
+    for i .= alignment-1; i < width; i++
+      n .= 0
+      skip .= false
+      for k .= 0; k < alignment; k++
+        index := width * (j + k) + i - k;
+        if board[index] === color
+          n++
+        else if board[index] === 3 - color
+          skip = true
+      if !skip
+        score += 1 / 4 ** (alignment - n)
+
+  score
+
+export function erdosTable(width: number, height: number, board: number[], len: number, color: number): number[]
+  n := board.length
+  table := new Array n
+  table.fill(-Infinity)
+  for i .= 0; i < n; i++
+    if board[i] === 0
+      board[i] =  color
+      table[i] = 1.5 * erdosSelfridge(width, height, board, len, color)
+      board[i] = 3 - color
+      table[i] += erdosSelfridge(width, height, board, len, 3 - color)
+      board[i] = 0
+
+  min := Math.min ...table.filter(& !== -Infinity)
+  max := Math.max ...table
+
+  table.map((i) => i == -Infinity ? -Infinity : min === max ? 0 : (i - min) / (max - min))
+
+export function computerMove(table: number[]): number
+  n := table.length
+  max := Math.max ...table
+  moves := []
+  for i .= 0; i < n; i++
+    if table[i] === max
+      moves.push i
+  moves[Math.random() * moves.length | 0]

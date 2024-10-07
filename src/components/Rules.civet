@@ -1,0 +1,18 @@
+import { Component } from "solid-js"
+import Emph from "./Emph"
+
+Rules: Component<{closeDialog: => void}> := (props) =>
+  <div .dialog-title>Règles de Catch the lion
+  <div .dialog-body>
+    <ul>
+      <li .list-disc>Gomoku est un jeu à deux joueurs: <Emph>Noir</Emph> et <Emph>Blanc</Emph>
+      <li .list-disc>A tour de rôle, un des joueurs place un pion de sa couleur sur une case vide du plateau.
+      <li .list-disc>
+          Le but du jeu est d&#39;<Emph>aligner</Emph> un certain nombre de pions de sa
+          couleur, <Emph>horizontalement</Emph>, <Emph>verticalement</Emph> ou en <Emph>diagonal</Emph>.<br/>
+          Par défaut, ce nombre est <Emph>5</Emph> mais tu peux le paramétrer entre 3 et 8
+      <li .list-disc>Par défaut, la taille de la grille est 15x15 mais tu peux également la paramétrer.
+  <div .dialog-buttons>
+    <button class="btn" onClick=props.closeDialog>OK</button>
+
+export default Rules
