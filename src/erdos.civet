@@ -57,7 +57,7 @@ function erdosSelfridge(width: number, height: number, board: number[], alignmen
 export function erdosTable(width: number, height: number, board: number[], len: number, color: number): number[]
   n := board.length
   table := new Array n
-  table.fill(-Infinity)
+  table.fill -Infinity
   for i .= 0; i < n; i++
     if board[i] === 0
       board[i] =  color
@@ -66,10 +66,10 @@ export function erdosTable(width: number, height: number, board: number[], len: 
       table[i] += erdosSelfridge(width, height, board, len, 3 - color)
       board[i] = 0
 
-  min := Math.min ...table.filter(& !== -Infinity)
+  min := Math.min ...table.filter & !== -Infinity
   max := Math.max ...table
 
-  table.map((i) => i == -Infinity ? -Infinity : min === max ? 0 : (i - min) / (max - min))
+  table.map(& === -Infinity ? -Infinity : min === max ? 0 : (& - min) / (max - min))
 
 export function computerMove(table: number[]): number
   n := table.length

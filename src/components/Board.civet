@@ -1,7 +1,7 @@
 import range from "lodash.range";
 import { Component, createMemo, createSignal, For, Index, Show } from "solid-js";
 import { Transition } from "solid-transition-group";
-import { Outcome } from "../model";
+import { Outcome } from "../model.civet";
 
 alphabet := "ABCDEFGHIJKLMNOPQRSTUVWXYZ";
 
@@ -83,7 +83,7 @@ Board: BoardComponent := (props) =>
         {[x, y] =>
           <circle cx=50*x cy=50*y r="5" fill="black" />
         }
-      <Index each={props.board}>
+      <Index each=props.board>
         {(c, i) =>
           <g transform=`translate(${50 * (i % props.width)} ${50 * (i / props.width | 0)})`>
             <rect
@@ -92,11 +92,11 @@ Board: BoardComponent := (props) =>
               width="50"
               height="50"
               class="transition-opacity duration-1000"
-              style={ opacity: c() > 0 || !props.scores ? 0 : 0.5 }
-              fill={!props.scores ? "transparent" : `rgb(255,${256 * (1 - props.scores[i])},0)`}
-              onClick={[props.play, i]}
-              onPointerEnter={[setHover, i]}
-              onPointerLeave={[setHover, null]}
+              style={opacity: if c() > 0 || !props.scores then 0 else 0.5}
+              fill={if !props.scores then "transparent" else `rgb(255,${256 * (1 - props.scores[i])},0)`}
+              onClick=[props.play, i]
+              onPointerEnter=[setHover, i]
+              onPointerLeave=[setHover, null]
             />
             <Transition
               onExit={(el, done) => {
@@ -105,7 +105,7 @@ Board: BoardComponent := (props) =>
                   { opacity: 0, transform: "translateY(-50px)" }], {
                   duration: 600
                 })
-                a.finished.then(done);
+                a.finished.then done
               }}
             >
               {c() !== 0 &&
@@ -113,7 +113,7 @@ Board: BoardComponent := (props) =>
                   cx="0"
                   cy="0"
                   r="20"
-                  fill={c() === 1 ? "url(#black-gradient)" : "url(#white-gradient)"}
+                  fill={if c() === 1 then "url(#black-gradient)" else "url(#white-gradient)"}
                 />
               }
           }
@@ -123,7 +123,7 @@ Board: BoardComponent := (props) =>
           cx={50 * (hover()! % props.width)}
           cy={50 * (hover()! / props.width | 0)}
           r="20"
-          fill={props.turn === 1 ? "url(#black-gradient)" : "url(#white-gradient)"}
+          fill={if props.turn === 1 then "url(#black-gradient)" else "url(#white-gradient)"}
           opacity="0.7"
           class="pointer-events-none animate-peg"
         />
@@ -146,7 +146,7 @@ Board: BoardComponent := (props) =>
           cx={50 * (props.lastMove % props.width)}
           cy={50 * (props.lastMove / props.width | 0)}
           r="10"
-          stroke={props.turn === 1 ? "black" : "white"}
+          stroke={if props.turn === 1 then "black" else "white"}
           stroke-width="3"
           fill="transparent"
           class="pointer-events-none"

@@ -1,13 +1,13 @@
 import { Component, createMemo, onMount } from 'solid-js'
 import { createStore, produce } from "solid-js/store"
-import Board from './components/Board'
-import { delay, last } from './util'
-import { computerMove, erdosTable } from './erdos'
-import { Config, getThreats, hasWon, newState } from './model'
-import NewGame from './components/NewGame'
-import Info from './components/Info'
-import Rules from './components/Rules'
-import Credits from './components/Credits'
+import { delay, last } from './util.civet'
+import { computerMove, erdosTable } from './erdos.civet'
+import { Config, getThreats, hasWon, newState } from './model.civet'
+import Board from './components/Board.civet'
+import NewGame from './components/NewGame.civet'
+import Info from './components/Info.civet'
+import Rules from './components/Rules.civet'
+import Credits from './components/Credits.civet'
 
 App: Component := () =>
   let dialog!: HTMLDialogElement

@@ -1,6 +1,6 @@
 import { Component } from "solid-js";
 import { createStore } from "solid-js/store"
-import { Adversary, Config, newConfig } from "../model"
+import { Adversary, Config, newConfig } from "../model.civet"
 
 type NewGameComponent = Component<{
   config: Config
