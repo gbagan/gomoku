@@ -10,6 +10,7 @@ messages: [Message, number][] := [
   [["Bienvenue sur l'appli ", ["Gomoku"], "."], 3000]
   [[["Gomoku"], " connu aussi sous le nom de Darpion est un jeu positionnel japonais d'origine chinoise."], 5000]
   [["Il existe de nombreuses variantes: Libre, ", ["Renju"], ", ", ["Caro"], ", ", ["Omok"], ", ", ["Ninuki-renju"], "."], 5000]
+  [["Lorsque tu joues contre l'IA, la couleur d'une case indique la ", ["menace"], " d'un coup. Plus il tend vers le ", ["rouge"], ", plus le coup est intéressant pour l'IA"], 7000]
 ]
 
 type InfoComponent = Component<{

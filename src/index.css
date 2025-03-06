@@ -57,7 +57,7 @@
   .tooltip {
     @apply bg-white absolute text-center rounded-xl
       px-2 py-1 mb-4 w-96
-      right-0 bottom-full transition-opacity duration-500;
+      -right-5 bottom-full transition-opacity duration-500;
   }
 
   .tooltip::after {

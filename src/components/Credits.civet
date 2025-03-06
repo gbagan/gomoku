@@ -2,7 +2,7 @@ import { Component } from "solid-js"
 import Emph from "./Emph.civet"
 
 Rules: Component<{closeDialog: => void}> := (props) =>
-  <div .dialog-title>Règles de Catch the lion
+  <div .dialog-title>Règles de Gomoku
   <div .dialog-body>
     <ul>
       <li .list-disc>L&#39;application <Emph>Gomoku</Emph> a été écrite par Guillaume Bagan.

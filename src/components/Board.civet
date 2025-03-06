@@ -22,10 +22,10 @@ Board: BoardComponent := (props) =>
   [hover, setHover] := createSignal<number | null> null
 
   dimensions := createMemo =>
-    x := 0.06 * (140 + 50 * (props.width - 1))
-    y := 0.06 * (140 + 50 * (props.height - 1))
-    m := Math.max(x, y);
-    if m > 50 then [x * 42 / m, y * 42 / m] else [x, y]
+    x := 0.1 * (140 + 50 * (props.width - 1))
+    y := 0.1 * (140 + 50 * (props.height - 1))
+    m := Math.max(x, y)
+    if m > 85 then [x * 85 / m, y * 85 / m] else [x, y]
 
   points := =>
     mx := props.width / 2 | 0
@@ -37,8 +37,8 @@ Board: BoardComponent := (props) =>
   <div
     class="bg-wood border-4 border-black rounded-3xl relative z-20"
     style={
-      width: `${dimensions()[0]}rem`
-      height: `${dimensions()[1]}rem`
+      width: `${dimensions()[0]}vmin`
+      height: `${dimensions()[1]}vmin`
     }
   >
     <svg viewBox={`-70 -70 ${140 + 50 * (props.width - 1)} ${140 + 50 * (props.height - 1)}`} class="select-none">
