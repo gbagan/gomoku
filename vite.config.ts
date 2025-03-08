@@ -13,6 +13,15 @@ export default defineConfig({
     VitePWA({
       registerType: 'autoUpdate',
       injectRegister: 'auto',
+      manifest: {
+        name: 'Gomoku',
+        short_name: 'Gomoku',
+        start_url: '/gomoku/',
+        scope: '/gomoku/',
+        display: 'standalone',
+        background_color: '#ffffff',
+        theme_color: '#0000ff'
+      },
       workbox: {
         globPatterns: ['**/*.{js,css,html,ico,png,webm,webp}']
       }
