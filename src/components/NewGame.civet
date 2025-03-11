@@ -8,7 +8,7 @@ type NewGameComponent = Component<{
   newGame: (config: Config) => void
 }>
 
-adversaries := [["human", "Humain"], ["level1", "Débutant"]]
+adversaries := [["human", "Humain"], ["level1", "IA"]]
 
 NewGame: NewGameComponent := (props) =>
   [config, setConfig] := createStore {...props.config}
