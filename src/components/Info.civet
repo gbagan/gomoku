@@ -30,13 +30,13 @@ Info: InfoComponent := (props) =>
       if props.outcome.color === 0
       then ["Match nul! Tu peux changer le niveau de difficulté en cliquant sur ", ["Nouvelle partie"], "."]
       else if props.adversary === 'human'
-      then [`Le joueur ${if props.outcome.color === 1 then "noir" else "blanc"} a gagné la partie. ",
-            "Tu peux jouer contre l'IA en cliquant sur `, ["Nouvelle partie"], "."]
+      then [`${if props.outcome.color === 1 then "Noir" else "Blanc"} a gagné la partie. Tu peux jouer contre l'IA en cliquant sur `,
+            ["Nouvelle partie"], "."]
       else if props.outcome.color === 1
       then ["Zut! J'ai perdu! Tu peux changer de difficulté en cliquant sur ", ["Nouvelle partie"], "!"]
       else ["Oh oui! J'ai gagné! Tu peux changer de difficulté en cliquant sur ", ["Nouvelle partie"], "!"]
     else if props.multipleThreats
-    then [`Le joueur ${if props.turn === 1 then "blanc" else "noir"} a réussi une `, ["menace multiple"],
+    then [`${if props.turn === 1 then "Blanc" else "Noir"} a réussi une `, ["menace multiple"],
           ". Il peut gagner la partie quoique réponde l'adversaire."]
     else periodicMessage()
 
