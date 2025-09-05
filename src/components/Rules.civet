@@ -13,6 +13,6 @@ Rules: Component<{closeDialog: => void}> := (props) =>
           Par défaut, ce nombre est <Emph>5</Emph> mais tu peux le paramétrer entre 3 et 8
       <li .list-disc>Par défaut, la taille de la grille est 15x15 mais tu peux également la paramétrer.
   <div .dialog-buttons>
-    <button class="btn" onClick=props.closeDialog>OK</button>
+    <button .btn onClick=props.closeDialog>OK</button>
 
 export default Rules

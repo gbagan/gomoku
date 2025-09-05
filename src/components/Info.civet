@@ -72,7 +72,7 @@ Info: InfoComponent := (props) =>
         a.finished.then done
       }
     > {message() &&
-        <div class="tooltip">
+        <div .tooltip>
           <For each={message()}>{(m) => if typeof m === "string" then m else <Emph>{m[0]}}
       }
 

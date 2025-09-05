@@ -104,33 +104,33 @@ App: Component := () =>
     <div class="absolute bg-white w-full h-full opacity-30 z-10 pointer-events-none" />
     <div class="z-20 flex flex-col bg-wood p-6 border-2 border-black rounded-xl gap-4">
       <div class="text-4xl">Gomoku</div>
-      <button class="btn" onClick={openNewGameDialog}>Nouvelle partie</button>
-      <button class="btn" onClick={undo}>Annuler</button>
-      <button class="btn" onClick={openRulesDialog}>Règles</button>
-      <button class="btn" onClick={openCreditsDialog}>Crédits</button>
+      <button .btn onClick={openNewGameDialog}>Nouvelle partie</button>
+      <button .btn onClick={undo}>Annuler</button>
+      <button .btn onClick={openRulesDialog}>Règles</button>
+      <button .btn onClick={openCreditsDialog}>Crédits</button>
     <Board
-      board={state.board}
-      width={state.config.width}
-      height={state.config.height}
-      lastMove={last(state.played)}
-      turn={state.turn}
-      scores={state.scores}
-      outcome={state.outcome}
-      threats={threats()}
+      board=state.board
+      width=state.config.width
+      height=state.config.height
+      lastMove=last(state.played)
+      turn=state.turn
+      scores=state.scores
+      outcome=state.outcome
+      threats=threats()
       canPlay={!state.isThinking && !state.outcome}
-      play={play}
+      play=play
     />
     <Info
       multipleThreats={threats().length >= 2}
-      outcome={state.outcome}
-      turn={state.turn}
-      isThinking={state.isThinking}
-      adversary={state.config.adversary}
+      outcome=state.outcome
+      turn=state.turn
+      isThinking=state.isThinking
+      adversary=state.config.adversary
     />
   <dialog .dialog
-    ref={dialog}
-    onCancel={closeDialog}
-    onClose={closeDialog}
+    ref=dialog
+    onCancel=closeDialog
+    onClose=closeDialog
   >
     {switch state.dialog
       "newgame"

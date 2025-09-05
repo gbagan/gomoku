@@ -24,7 +24,7 @@ NewGame: NewGameComponent := (props) =>
     <div .flex.gap-4>
       {adversaries.map(([name, fullname]) =>
         <button .togglebtn
-          classList={"toggledbtn": name === config.adversary}
+          classList={toggledbtn: name === config.adversary}
           onClick=[setAdversary, name]
         > {fullname}
       )}
@@ -32,7 +32,7 @@ NewGame: NewGameComponent := (props) =>
     <div .flex.gap-4>
       {[3..8].map((i) =>
         <button .togglebtn
-          classList={"toggledbtn": i === config.alignment}
+          classList={toggledbtn: i === config.alignment}
           onClick=[setAlignment, i]
         > {i}
       )}
@@ -41,7 +41,7 @@ NewGame: NewGameComponent := (props) =>
     <div .grid.grid-cols-6.gap-4>
       {[3..20].map((i) =>
         <button .togglebtn
-          classList={"toggledbtn": i === config.height}
+          classList={toggledbtn: i === config.height}
           onClick=[setHeight, i]
         > {i}
       )}
@@ -50,7 +50,7 @@ NewGame: NewGameComponent := (props) =>
     <div .grid.grid-cols-6.gap-4>
       {[3..20].map((i) =>
         <button .togglebtn
-          classList={{"toggledbtn": i === config.width}}
+          classList={{toggledbtn: i === config.width}}
           onClick=[setWidth, i]
         > {i}
       )}
